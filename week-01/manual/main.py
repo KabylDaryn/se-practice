@@ -3,7 +3,6 @@ valid_marks = []
 for mark in marks:
     try:
         mark = float(mark)
-
         if 0<= mark <= 100:
             valid_marks.append(mark)
 

@@ -1,80 +1,24 @@
 @startuml
 left to right direction
 
-actor Student
-actor Administrator
+actor Student as student
+actor Administrator as administrator
 
-rectangle "Smart Campus Study Room Booking System" {
-
-    usecase "View Availability" as UC1
-    usecase "Book Room" as UC2
-    usecase "Cancel Booking" as UC3
-    usecase "Block Room" as UC4
-    usecase "Unblock Room" as UC5
-    usecase "Review Usage" as UC6
-    usecase "Display Confirmation" as UC7
+rectangle "Smart Campus booking system" {
+    usecase "View availability" as UC1
+    usecase "Book room" as UC2
+    usecase "Cancel booking" as UC3
+    usecase "View my bookings" as UC4
+    usecase "Block / unblock room" as UC5
+    usecase "Review usage" as UC6
 }
 
-Student --> UC1
-Student --> UC2
-Student --> UC3
+student --> UC1
+student --> UC2
+student --> UC3
+student --> UC4
 
-Administrator --> UC4
-Administrator --> UC5
-Administrator --> UC6
-
-'why: R4 - Successful booking produces an immediate confirmation
-UC2 ..> UC7 : <<include>>
-
-'why: US-03 - Confirmation displayed upon successful cancellation
-UC3 ..> UC7 : <<include>>
-
-note right of UC1
-Assumption:
-The library system displays the
-current status of all rooms
-in real time.
-end note
-
-note right of UC2
-Booking Rules (R1-R3):
-- Start time in future
-- Duration 1 to 2 hours (R2)
-- Room unblocked (R3)
-- No overlapping bookings
-end note
-
-note right of UC3
-Assumption:
-A student can only cancel
-a booking that they
-previously created.
-end note
-
-note right of UC4
-Assumption:
-Blocking a room prevents
-new bookings for that room.
-end note
-
-note right of UC5
-Assumption:
-Unblocking restores
-availability for future
-time slots.
-end note
-
-note right of UC6
-Assumption:
-System logs record completed
-and cancelled bookings.
-end note
-
-note right of UC7
-Assumption:
-Confirmation details are
-displayed immediately
-in the web application.
-end note
+administrator --> UC5
+administrator --> UC6
 
 @enduml

@@ -1,54 +1,27 @@
 @startuml
-title Book Room - Smart Campus Study Room Booking
+autonumber
 
-actor Student
-participant BookingService
-database BookingRepository
+actor Student as student
+participant BookingService as service
+participant BookingRepository as repo
 
-Student -> BookingService: bookRoom(roomId, startTime, endTime)
-activate BookingService
+student -> service : Book room (roomId, startTime, endTime)
+activate service
 
-BookingService -> BookingService: validate Rules (R1: future start & duration <= 2h)
+service -> repo : Check availability (roomId, startTime, endTime)
+activate repo
+repo --> service : Room available status
+deactivate repo
 
-BookingService -> BookingRepository: checkRoomStatusAndOverlap(roomId, startTime, endTime)
-activate BookingRepository
-BookingRepository --> BookingService: room status & overlap result (R2, R3)
-deactivate BookingRepository
-
-alt Room available, unblocked, and rules valid
-    BookingService -> BookingRepository: saveBooking(studentId, roomId, startTime, endTime)
-    activate BookingRepository
-    BookingRepository --> BookingService: booking created
-    deactivate BookingRepository
-
-    BookingService --> Student: Booking confirmed & displayed (R4 / US-07)
-
-else Room blocked or time conflict (R2/R3 violated)
-    BookingService --> Student: Booking rejected (room unavailable or rule failure)
+alt Room available and rules valid (R1-R3 met)
+    service -> repo : saveBooking(studentId, roomId, startTime, endTime)
+    activate repo
+    repo --> service : booking created
+    deactivate repo
+    service --> student : Booking confirmed
+else Room unavailable or rule violation (R1-R3 failed)
+    service --> student : Booking rejected
 end
 
-deactivate BookingService
-
-note right of BookingService
-Design component:
-BookingService contains validation 
-and application logic for R1-R4.
-- R1: Start time in future, duration <= 2h.
-- R2/R3: Room must not be blocked, interval must not overlap.
-- Boundary condition: end time == start time of next booking is allowed.
-end note
-
-note right of BookingRepository
-Design component:
-BookingRepository handles data persistence 
-and queries existing bookings.
-end note
-
-note bottom
-Assumptions:
-1. Student is authenticated.
-2. Validation completes prior to saving the booking.
-3. No booking is saved on failure.
-end note
-
+deactivate service
 @enduml

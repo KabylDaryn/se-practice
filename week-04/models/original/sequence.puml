@@ -1,0 +1,78 @@
+@startuml
+title Book Room - Smart Campus Study Room Booking
+
+actor Student
+participant BookingService
+database BookingRepository
+
+Student -> BookingService: bookRoom(roomId, startTime, endTime)
+activate BookingService
+
+BookingService -> BookingService: validate future start time
+BookingService --> Student: validation result
+
+alt Rules valid
+    BookingService -> BookingService: check room is unblocked
+    BookingService -> BookingRepository: findAvailableRoom(roomId, startTime, endTime)
+    activate BookingRepository
+
+    BookingRepository --> BookingService: room available
+    deactivate BookingRepository
+
+    BookingService -> BookingRepository: saveBooking(studentId, roomId, startTime, endTime)
+    activate BookingRepository
+
+    BookingRepository --> BookingService: booking created
+    deactivate BookingRepository
+
+    BookingService --> Student: Booking confirmed
+
+else Room unavailable or rules invalid
+    BookingService --> Student: Room unavailable / booking rejected
+    Student -> BookingService: request alternative room
+    BookingService -> BookingRepository: findAvailableRooms(startTime, endTime)
+    activate BookingRepository
+
+    BookingRepository --> BookingService: available rooms
+    deactivate BookingRepository
+
+    BookingService --> Student: Alternative rooms returned
+end
+
+deactivate BookingService
+
+note right of BookingService
+Design component:
+BookingService contains booking
+validation and application logic.
+
+It checks:
+- room is unblocked
+- start time is in the future
+- booking does not conflict
+- R2 duration rule
+- R3 overlap rule
+end note
+
+note right of BookingRepository
+Design component:
+BookingRepository handles persistence
+and searches for available rooms
+and existing bookings.
+end note
+
+note bottom
+Assumptions:
+1. Student is already authenticated.
+2. BookingService is responsible for enforcing
+   the approved booking rules.
+3. BookingRepository can detect conflicting
+   bookings for the selected room.
+4. A rejected booking is not saved.
+5. An alternative room search uses the same
+   requested time interval.
+6. R2 and R3 are applied according to the
+   project's approved rules.
+end note
+
+@enduml

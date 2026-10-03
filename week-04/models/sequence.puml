@@ -1,0 +1,59 @@
+@startuml
+title Book Room - Smart Campus Study Room Booking
+
+actor Student
+participant BookingService
+database BookingRepository
+
+Student -> BookingService: bookRoom(roomId, startTime, endTime)
+activate BookingService
+
+BookingService -> BookingService: validate Rules (R1: future start & duration 0..2h, R3: room not blocked)
+
+BookingService -> BookingRepository: checkOverlap(roomId, startTime, endTime)
+activate BookingRepository
+BookingRepository --> BookingService: overlap result (R2)
+deactivate BookingRepository
+
+alt Rules valid and room available
+    BookingService -> BookingRepository: saveBooking(studentId, roomId, startTime, endTime)
+    activate BookingRepository
+    BookingRepository --> BookingService: booking created
+    deactivate BookingRepository
+
+    BookingService --> Student: Booking confirmed (R4)
+
+else Room unavailable or rules invalid
+    BookingService --> Student: Room unavailable / booking rejected
+    
+    Student -> BookingService: requestAlternativeRooms(startTime, endTime)
+    BookingService -> BookingRepository: findAvailableRooms(startTime, endTime)
+    activate BookingRepository
+    BookingRepository --> BookingService: available rooms
+    deactivate BookingRepository
+
+    BookingService --> Student: Alternative rooms returned
+end
+
+deactivate BookingService
+
+note right of BookingService
+Design component:
+BookingService contains validation 
+and application logic for R1-R4.
+end note
+
+note right of BookingRepository
+Design component:
+BookingRepository handles data persistence 
+and queries existing bookings.
+end note
+
+note bottom
+Assumptions:
+1. Student is authenticated.
+2. R1, R2, R3 validations happen before any persistence call.
+3. No booking is created on failure branches.
+end note
+
+@enduml

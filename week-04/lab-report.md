@@ -16,7 +16,7 @@
 | Exact model | GPT-4o |
 | Renderer | VS Code extension |
 | Behaviour diagram | sequence |
-| Stories used | the reference set from README §3 |
+| Stories used | the reference set from Week-03 |
 
 ---
 

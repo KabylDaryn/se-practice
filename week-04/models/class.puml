@@ -1,0 +1,67 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Student {
+    - studentId: String
+    - name: String
+    - email: String
+}
+
+class Administrator {
+    - administratorId: String
+    - name: String
+    - email: String
+    + reviewUsage(startDate: Date, endDate: Date): UsageReport
+}
+
+class Room {
+    - roomId: String
+    - roomNumber: String
+    - status: RoomStatus
+    + block(): void
+    + unblock(): void
+}
+
+class Booking {
+    - bookingId: String
+    - startTime: DateTime
+    - endTime: DateTime
+    - status: BookingStatus
+    + cancel(): void
+}
+
+class UsageReport {
+    - startDate: Date
+    - endDate: Date
+    - totalBookings: int
+    - cancelledBookings: int
+    + generateStatistics(): void
+}
+
+enum RoomStatus {
+    AVAILABLE
+    BLOCKED
+}
+
+enum BookingStatus {
+    ACTIVE
+    CANCELLED
+    COMPLETED
+}
+
+Student "1" -- "0..*" Booking : creates
+Room "1" -- "0..*" Booking : reserved in
+Administrator "1" -- "0..*" Room : manages
+Administrator "1" -- "0..*" UsageReport : reviews
+
+note right of Booking
+  R2 Rule: Max duration is 2 hours (<= 120 mins).
+  R3 Rule: Active bookings for the same room cannot overlap.
+  Boundary rule: End time equal to next Start time is NOT an overlap.
+end note
+
+note bottom of Room
+  A blocked room cannot accept a new booking.
+end note
+
+@enduml

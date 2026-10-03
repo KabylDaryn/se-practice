@@ -1,0 +1,77 @@
+@startuml
+left to right direction
+
+actor Student
+actor Administrator
+
+rectangle "Smart Campus Study Room Booking System" {
+
+    usecase "View Availability" as UC1
+    usecase "Book Room" as UC2
+    usecase "Cancel Booking" as UC3
+    usecase "Block Room" as UC4
+    usecase "Unblock Room" as UC5
+    usecase "Review Usage" as UC6
+    usecase "Send Confirmation" as UC7
+}
+
+Student --> UC1
+Student --> UC2
+Student --> UC3
+Student --> UC7
+
+Administrator --> UC4
+Administrator --> UC5
+Administrator --> UC6
+
+UC2 ..> UC7 : <<include>>
+UC3 ..> UC7 : <<include>>
+
+note right of UC1
+Assumption:
+The library system displays the
+current status of all rooms
+in real time.
+end note
+
+note right of UC2
+Assumption:
+The requested room is unblocked
+and the selected time slot
+starts in the future.
+end note
+
+note right of UC3
+Assumption:
+A student can only cancel
+a booking that they
+previously created.
+end note
+
+note right of UC4
+Assumption:
+Blocking a room prevents
+new bookings for that room.
+end note
+
+note right of UC5
+Assumption:
+Unblocking restores
+availability for future
+time slots.
+end note
+
+note right of UC6
+Assumption:
+System logs record completed
+and cancelled bookings.
+end note
+
+note right of UC7
+Assumption:
+Confirmation details are
+displayed immediately
+in the web application.
+end note
+
+@enduml

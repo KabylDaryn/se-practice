@@ -1,0 +1,44 @@
+# week-04/submission.yml — your declaration for this lab.
+
+schema: 1
+week: "04"
+
+student:
+  name: "Kabyl Daryn"
+  student_id: "24B032130"
+  github: "DarynKabyl"
+
+assistant:
+  tool: "ChatGPT"
+  model: "GPT-4o"
+
+counts:
+  behaviour_diagram: "sequence"
+  stories_source: "reference"
+  use_cases: 7
+  change_log_rows: 3
+
+checker:
+  pass: 37
+  fail: 0
+  error: 0
+  commit: "9e9c3b4"
+  kept_fails: []
+
+assumptions:
+  overlap_touching_bookings: "allowed"
+  blocking_a_booked_room: "cancel-bookings"
+
+traceability:
+  use_cases_not_traced: []
+  rules_not_shown: []
+
+review_findings:
+  - "Student was associated with View Usage Reports; restricted this use case exclusively to Administrator."
+  - "BookingRepository class was placed in domain model; removed it to keep domain classes pure and documented as infrastructure."
+  - "Sequence diagram called saveBooking() on rule violation branch; restricted persistence call only to success branch."
+
+honesty:
+  originals_unedited: "yes"
+  can_explain_everything_submitted: "yes"
+  ai_usage_disclosed: "yes"

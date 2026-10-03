@@ -1,0 +1,24 @@
+@startuml
+left to right direction
+
+actor Student as student
+actor Administrator as administrator
+
+rectangle "Smart Campus booking system" {
+    usecase "View availability" as UC1
+    usecase "Book room" as UC2
+    usecase "Cancel booking" as UC3
+    usecase "View my bookings" as UC4
+    usecase "Block / unblock room" as UC5
+    usecase "Review usage" as UC6
+}
+
+student --> UC1
+student --> UC2
+student --> UC3
+student --> UC4
+
+administrator --> UC5
+administrator --> UC6
+
+@enduml

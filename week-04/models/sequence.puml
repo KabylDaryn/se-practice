@@ -1,0 +1,27 @@
+@startuml
+autonumber
+
+actor Student as student
+participant BookingService as service
+participant BookingRepository as repo
+
+student -> service : Book room (roomId, startTime, endTime)
+activate service
+
+service -> repo : Check availability (roomId, startTime, endTime)
+activate repo
+repo --> service : Room available status
+deactivate repo
+
+alt Room available and rules valid (R1-R3 met)
+    service -> repo : saveBooking(studentId, roomId, startTime, endTime)
+    activate repo
+    repo --> service : booking created
+    deactivate repo
+    service --> student : Booking confirmed
+else Room unavailable or rule violation (R1-R3 failed)
+    service --> student : Booking rejected
+end
+
+deactivate service
+@enduml

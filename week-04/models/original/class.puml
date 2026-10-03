@@ -1,0 +1,76 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Student {
+    - studentId: String
+    - name: String
+    - email: String
+    + viewAvailability(): List<Room>
+    + bookRoom(room: Room, startTime: DateTime, endTime: DateTime): Booking
+    + cancelBooking(booking: Booking): void
+}
+
+class Administrator {
+    - administratorId: String
+    - name: String
+    - email: String
+    + blockRoom(room: Room): void
+    + unblockRoom(room: Room): void
+    + reviewUsage(startDate: Date, endDate: Date): void
+}
+
+class Room {
+    - roomId: String
+    - roomNumber: String
+    - status: RoomStatus
+    + isAvailable(startTime: DateTime, endTime: DateTime): Boolean
+    + block(): void
+    + unblock(): void
+}
+
+class Booking {
+    - bookingId: String
+    - startTime: DateTime
+    - endTime: DateTime
+    - status: BookingStatus
+    + create(): void
+    + cancel(): void
+}
+
+enum RoomStatus {
+    AVAILABLE
+    BLOCKED
+}
+
+enum BookingStatus {
+    ACTIVE
+    CANCELLED
+    COMPLETED
+}
+
+Student "1" -- "0..*" Booking : creates
+Room "1" -- "0..*" Booking : reserved in
+Administrator "1" -- "0..*" Room : manages
+
+note right of Student
+A student can create zero or
+many bookings.
+end note
+
+note right of Room
+A room can have many bookings
+over different time slots.
+Bookings must not overlap.
+end note
+
+note right of Booking
+Each booking belongs to exactly
+one student and one room.
+end note
+
+note bottom of Room
+A blocked room cannot receive
+new bookings.
+end note
+
+@enduml

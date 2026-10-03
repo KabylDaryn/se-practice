@@ -1,0 +1,38 @@
+schema: 1
+week: "03"
+
+student:
+  name: "Kabyl Daryn"
+  student_id: "24B032130"
+  github: "KabylDaryn"
+
+assistant:
+  tool: "Google Gemini"
+  model: "Gemini 2.5 Pro"
+
+counts:
+  user_stories: 7
+  acceptance_criteria_sets: 3
+
+checker:
+  pass: 23
+  fail: 0
+  error: 0
+  commit: "160bef1"
+
+assumptions:
+  overlap_touching_bookings: "not-allowed"
+  exactly_two_hours: "allowed"
+
+traceability:
+  use_cases_not_covered: []
+  stories_not_traced: []
+
+review_findings:
+  - "US-02: AI suggested authentication credentials assumption which violates Out-of-Scope rules."
+  - "US-07: AI introduced external SMS and email notifications which are strictly Out-of-Scope."
+  - "US-08: AI generated a QR code check-in story which is explicitly prohibited in Out-of-Scope."
+
+honesty:
+  can_explain_everything_submitted: "yes"
+  ai_usage_disclosed: "yes"

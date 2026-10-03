@@ -8,31 +8,23 @@ database BookingRepository
 Student -> BookingService: bookRoom(roomId, startTime, endTime)
 activate BookingService
 
-BookingService -> BookingService: validate Rules (R1: future start & duration 0..2h, R3: room not blocked)
+BookingService -> BookingService: validate Rules (R1: future start & duration <= 2h)
 
-BookingService -> BookingRepository: checkOverlap(roomId, startTime, endTime)
+BookingService -> BookingRepository: checkRoomStatusAndOverlap(roomId, startTime, endTime)
 activate BookingRepository
-BookingRepository --> BookingService: overlap result (R2)
+BookingRepository --> BookingService: room status & overlap result (R2, R3)
 deactivate BookingRepository
 
-alt Rules valid and room available
+alt Room available, unblocked, and rules valid
     BookingService -> BookingRepository: saveBooking(studentId, roomId, startTime, endTime)
     activate BookingRepository
     BookingRepository --> BookingService: booking created
     deactivate BookingRepository
 
-    BookingService --> Student: Booking confirmed (R4)
+    BookingService --> Student: Booking confirmed & displayed (R4 / US-07)
 
-else Room unavailable or rules invalid
-    BookingService --> Student: Room unavailable / booking rejected
-    
-    Student -> BookingService: requestAlternativeRooms(startTime, endTime)
-    BookingService -> BookingRepository: findAvailableRooms(startTime, endTime)
-    activate BookingRepository
-    BookingRepository --> BookingService: available rooms
-    deactivate BookingRepository
-
-    BookingService --> Student: Alternative rooms returned
+else Room blocked or time conflict (R2/R3 violated)
+    BookingService --> Student: Booking rejected (room unavailable or rule failure)
 end
 
 deactivate BookingService
@@ -41,6 +33,9 @@ note right of BookingService
 Design component:
 BookingService contains validation 
 and application logic for R1-R4.
+- R1: Start time in future, duration <= 2h.
+- R2/R3: Room must not be blocked, interval must not overlap.
+- Boundary condition: end time == start time of next booking is allowed.
 end note
 
 note right of BookingRepository
@@ -52,8 +47,8 @@ end note
 note bottom
 Assumptions:
 1. Student is authenticated.
-2. R1, R2, R3 validations happen before any persistence call.
-3. No booking is created on failure branches.
+2. Validation completes prior to saving the booking.
+3. No booking is saved on failure.
 end note
 
 @enduml

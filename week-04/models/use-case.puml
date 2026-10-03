@@ -12,7 +12,7 @@ rectangle "Smart Campus Study Room Booking System" {
     usecase "Block Room" as UC4
     usecase "Unblock Room" as UC5
     usecase "Review Usage" as UC6
-    usecase "Send Confirmation" as UC7
+    usecase "Display Confirmation" as UC7
 }
 
 Student --> UC1
@@ -23,10 +23,10 @@ Administrator --> UC4
 Administrator --> UC5
 Administrator --> UC6
 
-'why: R4 - A successful booking produces a confirmation
+'why: R4 - Successful booking produces an immediate confirmation
 UC2 ..> UC7 : <<include>>
 
-'why: US-03 - Confirmation sent upon successful cancellation
+'why: US-03 - Confirmation displayed upon successful cancellation
 UC3 ..> UC7 : <<include>>
 
 note right of UC1
@@ -37,10 +37,11 @@ in real time.
 end note
 
 note right of UC2
-Assumption:
-The requested room is unblocked
-and the selected time slot
-starts in the future.
+Booking Rules (R1-R3):
+- Start time in future
+- Duration 1 to 2 hours (R2)
+- Room unblocked (R3)
+- No overlapping bookings
 end note
 
 note right of UC3
@@ -76,4 +77,4 @@ displayed immediately
 in the web application.
 end note
 
-@enduml 
+@enduml

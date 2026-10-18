@@ -28,8 +28,8 @@ Fill the first three columns now; fill the last one after Task 3.
 
 | # | What I expect to go wrong | AC it concerns | Was I right? (after Task 3) |
 | --- | --- | --- | --- |
-| 1 | | | |
-| 2 | | | |
+| 1 |v1 will probably treat 11:00–12:00 as overlapping with the existing 10:00–11:00 booking, so case T1 will give Unavailable instead of Available. (AC4) |AC4 | |
+| 2 |v1 will probably have no way to block the room, so case T3 will be Not testable. (AC3) |AC3 | |
 
 **The initial prompt exactly as I sent it** — the deck's prompt with AC1–AC6 pasted in place of
 `[paste AC1–AC6]`, nothing else changed:

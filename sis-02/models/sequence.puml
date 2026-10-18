@@ -1,0 +1,70 @@
+' SIS #02 — your FINAL sequence diagram goes here, as PlantUML (@startuml … @enduml).
+' Start from the AI's original in models/original/sequence.puml, apply your accepted review
+' decisions, then render it to models/img/sequence.png (or .svg). README section 5.
+@startuml
+title Course Registration - Sequence Diagram
+autonumber
+
+actor Student
+boundary "Course Catalog UI" as UI
+control "Registration Service" as RS
+database "Enrollment Repository" as ER
+
+Student -> UI: Browse offerings(semester)
+UI -> RS: getOfferings(semester)
+RS -> ER: findOfferings(semester)
+ER --> RS: offerings with capacity and enrollments
+RS --> UI: course code, title, offering,\navailable places
+UI --> Student: Display catalog
+
+note over UI, ER
+Browsing does not reserve a place
+or create an Enrollment.
+A previously available place may be gone
+by the time registration is requested.
+end note
+
+Student -> UI: Request registration(offering)
+UI -> RS: register(studentId, offeringId)
+
+group Atomic registration operation (R2, R3, R4)
+    RS -> ER: registerAtomically(studentId, offeringId)
+    activate ER
+
+    ER -> ER: Check duplicate enrollment
+    ER -> ER: Check current capacity and count
+
+    note right of ER
+    Both checks and any Enrollment creation
+    are performed during this one operation.
+    Competing requests cannot take
+    the same last available place.
+    end note
+
+    alt already enrolled
+        ER --> RS: Rejected: already enrolled
+        RS --> UI: Rejection("already enrolled")
+        UI --> Student: Show rejection
+
+    else course full
+        ER --> RS: Rejected: course full
+        RS --> UI: Rejection("course full")
+        UI --> Student: Show rejection
+
+    else not enrolled and places left
+        ER -> ER: Create Enrollment(studentId, offeringId)
+        ER --> RS: Enrollment created; updated places
+        RS --> UI: Confirmation + updated places
+        UI --> Student: Show confirmation
+    end
+
+    deactivate ER
+end
+
+note over RS, ER
+For either rejection:
+no Enrollment is created,
+and the enrollment count remains unchanged.
+end note
+
+@enduml

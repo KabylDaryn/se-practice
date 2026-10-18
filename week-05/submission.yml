@@ -1,0 +1,60 @@
+# week-05/submission.yml — your declaration for this lab.
+#
+# Facts only. Every explanation goes in lab-report.md; nothing here repeats prose.
+# Fill every value. Check it before you push:
+#
+#     python tests/validate_submission.py
+#
+# The validator checks shape, never quality. A green run is the floor, not the grade.
+# If you cannot run Python, fill the file by hand against the comments — a malformed
+# file costs you nothing if the content is there.
+
+schema: 1
+week: "05"
+
+student:
+  name: "Daryn Kabyl"
+  student_id: "24B032130"           # as in KBTU records
+  github: "KabylDaryn"             # your GitHub username
+
+assistant:
+  tool: "ChatGPT"                    # e.g. ChatGPT, Claude, Gemini, DeepSeek, Grok
+  model: "gpt-4o"                    # the exact model name with its version
+
+language:
+  name: "python"                     # python | javascript | typescript | java | csharp | go | cpp | <other>
+  path: "A"                          # A (Python, the shipped checker runs your code) | B (any other language)
+
+counts:
+  tests: 20                          # how many tests your suite runs — Path A: the N in "Ran N tests"
+  v1_changed: "yes"                  # yes | no   is your final booking file different from code/original/booking_v1 ?
+  change_log_rows: 1                 # rows in lab-report.md section 7 (always at least 1)
+
+checker:
+  # Numbers from YOUR last run of: python tests/check_booking.py
+  # They must add up to the number of checks it runs (32 on Path A, 13 on Path B).
+  pass: 29
+  fail: 3
+  error: 0
+  commit: "49fab87"                     # the commit you ran the checker at: git rev-parse --short HEAD
+  known_fails: [M2, M7, M10]                  # every check ID that is still FAIL or ERROR, explained in lab-report.md §9.1
+
+assumptions:
+  # The contract says times are integers and stops there. Decide, declare, and defend it in lab-report.md §9.2.
+  non_integer_time: "not-handled"    # return-false | raise-error | not-handled | refused-by-compiler
+
+carried:
+  # What you declared in week-04/submission.yml under overlap_touching_bookings.
+  week04_touching: "allowed"         # allowed | not-allowed | not-submitted
+
+review_findings:
+  # Three or more. One line each, and each one names what it is about: an AC, a check ID,
+  # one of your tests, or v1.
+  - "F2: v1 used <= for the end boundary in AC1, so zero-length bookings (start == end) were incorrectly accepted."
+  - "S1: our test suite implements 12 distinct test cases covering all 6 table cases and all required further kinds."
+  - "AC4: the final overlap condition max(start, ex_start) < min(end, ex_end) correctly allows touching endpoints."
+
+honesty:
+  v1_unedited: "yes"                 # yes | no   code/original/ holds the assistant's first answer, untouched
+  can_explain_overlap_without_ai: "yes"  # yes | no   you will be asked in class
+  ai_usage_disclosed: "yes"          # yes | no   AI_USAGE.md is complete

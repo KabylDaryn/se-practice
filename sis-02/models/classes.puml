@@ -1,0 +1,54 @@
+' SIS #02 — your FINAL class diagram goes here, as PlantUML (@startuml … @enduml).
+' The file is classes.puml (plural), not class.puml as in Week 04.
+' Start from the AI's original in models/original/classes.puml, apply your accepted review
+' decisions, then render it to models/img/classes.png (or .svg). README section 6.
+@startuml
+title Course Registration - Domain Class Diagram
+skinparam classAttributeIconSize 0
+
+class Student {
+    +studentId: String
+}
+
+class Course {
+    +courseCode: String
+    +title: String
+}
+
+class CourseOffering {
+    +offeringId: String
+    +semester: String
+    +capacity: Integer
+    +getAvailablePlaces(): Integer
+}
+
+class Enrollment {
+    +enrollmentId: String
+}
+
+Course "1" -- "0..*" CourseOffering : has sections
+Student "1" -- "0..*" Enrollment : enrolls in
+CourseOffering "1" -- "0..*" Enrollment : has enrollments
+
+note right of CourseOffering
+{capacity > 0}
+{enrollmentCount = number of Enrollment records
+ linked to this offering}
+{availablePlaces = capacity - enrollmentCount}
+{enrollmentCount <= capacity}
+end note
+
+note bottom of Enrollment
+{unique(studentId, offeringId)}
+A student may enroll in different
+offerings, but only once per offering.
+end note
+
+note bottom of Course
+A Course describes a subject.
+A CourseOffering identifies one section
+of that course in one semester.
+A Course may have zero or more offerings.
+end note
+
+@enduml

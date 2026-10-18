@@ -33,24 +33,24 @@ Assumptions
 
 ### US-01 — Browse offerings
 
-**US-01:** (write here — As a student, I want …, so that …)
+**US-01:**As a student, I want to browse course offerings for a semester so that I can see the course information and available places.
 
-- **AC-01** (R?): (write here — Given …, When …, Then …)
-- **AC-02** (R?): (write here)
+- **AC-01** (R1): Given a course offering exists for the selected semester, When the student browses the electronic course catalog, Then the system shows the course code, title, offering, and available places.
+- **AC-02** (R1): Given a course offering has available places, When the student views the offering in the catalog, Then no Enrollment is created and the available places remain unchanged.
 
 ### US-02 — Register for an offering
 
-**US-02:** (write here)
+**US-02:** As a student, I want to register for a course offering so that I can secure an available place in that offering.
 
-- **AC-03** (R?): (write here)
-- **AC-04** (R?): (write here)
+- **AC-03** (R2, R3, R4): Given the selected offering has an available place and the student is not already enrolled in it, When the student requests registration, Then the system creates exactly one Enrollment, the places left decrease by one, and a confirmation is returned.
+- **AC-04** (R2, R4, R5): Given two different students request registration for the last available place in the same offering at the same time, When the registration requests are processed, Then exactly one request creates an Enrollment and the other is rejected as "course full", so the enrollment count does not exceed the offering's capacity.
 
 ### US-03 — Receive a clear rejection
 
-**US-03:** (write here)
+**US-03:** As a student, I want to receive a clear reason when my registration is rejected so that I understand why I cannot register.
 
-- **AC-05** (R?): (write here)
-- **AC-06** (R?): (write here)
+- **AC-05** (R2, R5): Given the catalog showed an available place but the selected offering is now full, When the student requests registration, Then the system rejects the request, explains "course full", creates no Enrollment, and leaves the enrollment count unchanged.
+- **AC-06** (R3, R5): Given the student is already enrolled in the selected offering, When the student requests registration again, Then the system rejects the request, explains "already enrolled", creates no Enrollment, and leaves the enrollment count unchanged.
 
 ## 3. Sequence diagram
 

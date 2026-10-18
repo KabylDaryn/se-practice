@@ -1,0 +1,55 @@
+@startuml
+title Course Registration - Sequence Diagram
+autonumber
+
+actor Student
+boundary "Course Catalog UI" as UI
+control "Registration Service" as RS
+database "Enrollment Repository" as ER
+
+Student -> UI: Browse offerings(semester)
+UI -> RS: getOfferings(semester)
+RS -> ER: findOfferings(semester)
+ER --> RS: offerings with capacity and enrollments
+RS --> UI: course code, title, offering,\navailable places
+UI --> Student: Display catalog
+
+note over UI, ER
+Browsing does not reserve a place
+or create an Enrollment.
+end note
+
+Student -> UI: Request registration(offering)
+UI -> RS: register(studentId, offeringId)
+
+group Atomic registration operation
+    RS -> ER: registerAtomically(studentId, offeringId)
+
+    note right of ER
+    Atomically:
+    1. Check duplicate enrollment
+    2. Recheck current capacity
+    3. Create one Enrollment if valid
+    4. Commit the result
+    Competing requests cannot take
+    the same last place.
+    end note
+
+    alt Already enrolled (R3)
+        ER --> RS: Rejected: already enrolled
+        RS --> UI: Rejection("already enrolled")
+        UI --> Student: Show rejection
+
+    else Offering full (R2)
+        ER --> RS: Rejected: course full
+        RS --> UI: Rejection("course full")
+        UI --> Student: Show rejection
+
+    else Place available and no duplicate
+        ER --> RS: Enrollment created
+        RS --> UI: Confirmation + updated places
+        UI --> Student: Show confirmation
+    end
+end
+
+@enduml

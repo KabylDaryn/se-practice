@@ -147,12 +147,12 @@ Assumptions
 <!-- Written BEFORE you run Prompt A, committed and pushed in your first commit, and never
      edited afterwards. This is what you paste into Prompt A as "My initial assumptions". -->
 
-**Scope:** (write here)
+**Scope:** This model covers student enrollment in course offerings, including available places and basic enrollment records, while excluding payments, prerequisites, scheduling clashes, waiting lists, and cancellation.
 
 **Initial assumptions:**
 
-1. (write here)
-2. (write here)
+1. Available places means the number of remaining seats in a course offering after subtracting currently enrolled students from its maximum capacity.
+2. Multiple enrollments are allowed, so one student can be enrolled in several different course offerings at the same time.
 
 ## 11. Appendix B — AI exchanges
 

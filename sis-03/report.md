@@ -13,14 +13,14 @@
 
 | Item | Value |
 | --- | --- |
-| Coding assistant (tool) | (write here) |
-| Coding assistant model | (write here) |
-| Bolt.new model | (write here) |
-| Bolt project link | (write here) |
-| Language | (write here) |
-| Path | (write here) |
-| Python v1 from | (write here) |
-| Web v1 from | (write here) |
+| Coding assistant (tool) | Claude.ai |
+| Coding assistant model | Claude Sonnet 5.5 |
+| Bolt.new model | Standard |
+| Bolt project link | A |
+| Language | python |
+| Path | A |
+| Python v1 from | fresh |
+| Web v1 from | fresh |
 
 ## 2. Baseline — before any new AI exchange
 
@@ -87,17 +87,39 @@ The start and duration are valid, but the request overlaps the existing booking 
 
 | Branch in v1 (quoted) | AC | Satisfies it? | Why |
 | --- | --- | --- | --- |
-| (write here) | (write here) | (write here) | (write here) |
-| (write here) | (write here) | (write here) | (write here) |
-| (write here) | (write here) | (write here) | (write here) |
-| (write here) | (write here) | (write here) | (write here) |
+| `if type(value) is not int:` | AC1 | yes | Checks start, end, and now, rejecting fractional values, strings, and Booleans instead of treating them as whole-minute times. |
+| `if type(blocked) is not bool:` | AC3 | yes | Enforces the assumed Boolean input type for blocked. The actual rejection of a blocked room happens below. |
+| `if not (0 <= start < end <= 1440):` | AC1 | yes | Rejects times outside the day, zero-length intervals, and an end earlier than the start. Allows an end of exactly 1440. |
+| `if start <= now:` | AC1 | yes | Rejects requests starting in the past or exactly now; only a later start can pass |
+| `if end - start > 120:` | AC2 | yes | Rejects durations above 120 minutes without rejecting exactly 120. |
+| `if blocked:` | AC3 | yes | 	Returns False whenever the room is blocked, regardless of existing bookings. |
+| `if start < b_end and end > b_start:` | AC4 | yes | Checks each existing booking for overlap. Strict comparisons allow endpoint touching, such as a request starting at 660 when a booking ends at 660.|
 
 ## 4. Prototype v1 in Bolt.new
 
 **Prompt as sent:**
 
 ~~~~text
-(paste here)
+Build one responsive single-page web app, "Smart Campus Room Availability Checker", using only front-end code (React or plain HTML/JS).
+
+User story: As a student, I want to check a room's availability so that I can choose a valid booking time.
+
+Page content:
+- ONE selected room (for example "Room A-101"); no room picker.
+- Fictional bookings shown on the page: 10:00-11:00 (minutes 600-660). Fixed "current time" shown on the page: 09:00 (minute 540).
+- A "Room is blocked" toggle, off by default.
+- Start time and end time inputs, and a "Check availability" button.
+- The result must be an unambiguous "Available" or "Unavailable", with a short explanation of the reason.
+
+Rules (acceptance criteria):
+AC1: times are whole minutes of the day, 0 <= start < end <= 1440; start must be strictly later than the current time (starting exactly at the current time is NOT allowed).
+AC2: duration at most 120 minutes; exactly 120 is allowed, 121 is not.
+AC3: if the room is blocked, every request is Unavailable.
+AC4: overlap with any existing booking is Unavailable; touching at an endpoint is NOT overlap (a booking ending at 11:00 and a request starting at 11:00 is fine).
+AC5: clear Available / Unavailable result; checking never changes or deletes existing bookings, and it never creates or confirms a booking.
+AC6: understandable validation messages (for example "Choose a start time later than the current time."), and a usable layout on narrow/mobile screens (about 375 px) with readable text, easy-to-tap controls and no horizontal scrolling.
+
+Strictly forbidden: login, database, backend, external API, payments, and any unrelated features. Do not add a "Book" or "Confirm" button.
 ~~~~
 
 <!-- Main generated files or components, with their path inside web/original/
@@ -105,12 +127,17 @@ The start and duration are valid, but the request overlaps the existing booking 
 
 | Generated file or component | Path | Its role |
 | --- | --- | --- |
-| (write here) | (write here) | (write here) |
-| (write here) | (write here) | (write here) |
-
+| App | App.tsx | The main application component that manages the user interface, state, and validation logic for checking room availability |
+| DayTimeline | App.tsx | A functional sub-component that renders a visual 24-hour timeline displaying the current time, existing bookings, and the requested time slot |
+ 
 **What v1 does:**
 
-- (write here)
+- Provides a "Room Availability Checker" interface for a specific room ("Room A-101") to see if a time slot is free without actually creating a booking.  
+- Validates user input to ensure start and end times are valid, occur in the future, do not exceed the maximum allowed duration of 120 minutes, and have an end time later than the start time. 
+- Evaluates the requested time slot against existing hardcoded bookings (e.g., 10:00 – 11:00) to prevent overlaps, allowing times that only touch at the endpoints.  
+- Includes a toggleable "Room is blocked" switch to simulate and check against administrative room closures.  
+- Returns distinct visual outcomes (Available, Unavailable, or Validation error) with explanatory text based on the check results.  
+- Renders a color-coded visual timeline of the day to help users visualize their requested slot alongside current bookings and the current time.   
 
 ## 5. Test cases — executed on both artifacts
 

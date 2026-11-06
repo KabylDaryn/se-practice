@@ -79,17 +79,103 @@ five columns.
 `Vitest`, followed by the case table from section 3:
 
 ```text
-(paste here)
+Generate tests for the existing booking function using Vitest. Use AC1–AC6 and the reviewed case table below.
+
+Import the real function used by the page. Keep its code unchanged. Use fixed time and fresh fixtures. Assert exact decisions and unchanged booking data.
+
+Return the test file, run command, and AC mapping. Flag unclear requirements. We will run the tests ourselves.
+
+**Function interface:**
+
+```typescript
+export function canBook({ start, end, now, blocked, bookings }): boolean
+```
+
+**Default fixture:**
+- now = 540
+- blocked = false
+- bookings = [{ start: 600, end: 660 }]
+
+**Reviewed test plan:**
+
+| ID | Input | Expected | AC |
+|---|---|---|---|
+| T01 | 660–720 | true | AC4 |
+| T02 | 540–570 | false | AC1 |
+| T03 | 720–720 | false | AC1 |
+| T04 | 750–720 | false | AC1 |
+| T05 | 1380–1441 | false | AC1 |
+| T06 | 720–840 | true | AC2 |
+| T07 | 720–841 | false | AC2 |
+| T08 | 570–600 | true | AC4 |
+| T09 | 630–690 | false | AC4 |
+| T10 | 570–690 | false | AC4 |
+| T11 | 615–645 | false | AC4 |
+| T12 | 600–660 | false | AC4 |
+| T13 | 660–720, blocked=true | false | AC3 |
+| T14 | 630–690, bookings=[] | true | AC4 |
+| AC5 | Available request, bookings unchanged | true, unchanged | AC5 |
+| X1 | 1439–1440 | true | AC1 |
+| X2 | 660–720, bookings=[{start:600,end:660},{start:720,end:780}] | true | AC4 |
+
+**Acceptance criteria:**
+
+AC1: 0 ≤ start < end ≤ 1440, and start > now.
+
+AC2: Maximum duration is 120 minutes.
+
+AC3: Blocked rooms are unavailable.
+
+AC4: Overlapping bookings are rejected; touching endpoints are allowed.
+
+AC5: Show Available/Unavailable without changing existing booking data.
+
+AC6: The page is responsive and provides understandable validation feedback.
 ```
 
 **The assistant's answer: run command, AC mapping and any unclear requirements it flagged,
 pasted unedited.** Its test file goes to `suites/first/` and is not pasted here:
 
 ```text
-(paste here)
+The test file is `canBook.test.ts`. I haven’t run it, as agreed.
+
+**One edit before you run it:** the import path `../src/booking` is a placeholder. Point it at the module the page actually imports `canBook` from. I assumed a named export.
+
+**Run command**
+```
+npx vitest run canBook.test.ts
 ```
 
-The first suite was saved to `suites/first/` **before** I changed anything in it: yes / no
+**What the file does**
+
+- Each test builds its own fixture from `makeDefaults()` (now=540, blocked=false, bookings=[{600–660}]), so nothing is shared between tests.
+- Time is fixed: `now` is always passed in, and fake timers pin the system clock in case anything reads `Date`.
+- Every test asserts an exact `true` or `false`.
+
+**AC mapping**
+
+| AC  | Tests                                                                                                                                 |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| AC1 | T02, T03, T04, T05, X1                                                                                                                |
+| AC2 | T06, T07                                                                                                                              |
+| AC3 | T13                                                                                                                                   |
+| AC4 | T01, T08, T09, T10, T11, T12, T14, X2                                                                                                 |
+| AC5 | Three tests: unchanged after an available request, unchanged after an unavailable request, and no mutation of a frozen bookings array |
+| AC6 | Not covered (see below)                                                                                                               |
+
+**Unclear requirements**
+
+1. **AC6 can’t be tested here.** Responsiveness and validation feedback need a component or browser test. `canBook` returns only a boolean, so it can’t say why a request was rejected.
+2. **AC5 is partly UI.** The “Available/Unavailable” display is a page concern. The tests only prove that `canBook` leaves booking data untouched.
+3. **Units are unstated.** I assumed `now`, `start` and `end` are minutes since midnight, which fits 1440 and the table. Please confirm.
+4. **The plan has no case for the `0 ≤ start` bound.** With now=540, a negative start also fails `start > now`, so it can’t be isolated with the default fixture. A case with `now` below 0 would be needed.
+5. **No cases for bad input.** `NaN`, non-integers, and missing or `undefined` fields aren’t covered, and the criteria don’t say what should happen with them.
+6. **No case for blocked plus another violation.** The result is `false` either way, so this only matters if you ever return a reason code.
+7. **No case for unsorted or overlapping existing bookings.** X2 covers only a sorted list.
+8. **T05 only isolates the end ≤ 1440 rule.** The duration is 61 minutes, so AC2 doesn’t interfere. The same goes for T07 on the duration rule, which fits within the day.
+```
+
+The first suite was saved to `suites/first/` **before** I changed anything in it: yes 
 
 ---
 
@@ -102,9 +188,10 @@ requests* · *mocked booking function*, or your own) and the AC that decides it.
 
 | # | Test or part of the suite | What is weak or wrong | Decision: accept / revise / reject | AC or reason |
 | --- | --- | --- | --- | --- |
-| 1 | | | accept / revise / reject | |
-| 2 | | | accept / revise / reject | |
-
+| 1 |Import path ../src/booking |The import does not point to the actual module from the test file in app/src. This means the tests cannot execute the real booking function correctly. | revise  | The tests must import the real canBook used by the page. |
+| 2 |Fake timers and new Date() |The suite uses a simulated system clock even though canBook already receives a fixed numeric now. This adds unnecessary setup and violates the final suite's no-clock requirement. | revise | AC1 requires comparison against the supplied now, not the system clock. |
+| 3 | AC5 test names | The available-request test checks the correct behavior, but its title does not contain the AC5 identifier.| revise | AC5 requires preserving existing booking data. |
+| 4 | T06: exactly 120 minutes |The test correctly expects true for a booking lasting exactly 120 minutes. | accept | AC2 rejects bookings longer than 120 minutes, not bookings equal to 120 minutes. |
 ---
 
 ## 6. Task 5 — running, diagnosing, improving

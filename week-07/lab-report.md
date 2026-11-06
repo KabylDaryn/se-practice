@@ -1,8 +1,8 @@
 # Week 07 — Lab report
 
-**Name:**
-**Group:**
-**Date:**
+**Name:**Kabyl Daryn
+**Group:**Monday 16:00-19:00
+**Date:**2026.11.06
 
 Fill in every section. **Do not delete, rename or renumber the headings.** The checker and the
 grader find your answers by them. You can add rows to any table, but never remove its header.
@@ -13,7 +13,7 @@ grader find your answers by them. You can add rows to any table, but never remov
 
 | | |
 | --- | --- |
-| Project I continue (`week-06` = my Week 06 Bolt project, `starter` = the provided starter) | |
+| Project I continue (`week-06` = my Week 06 Bolt project, `starter` = the provided starter) |`starter` |
 | Bolt project link (or `not shared`, and why) | |
 | Assistant that generated the tests (tool) | |
 | Exact model (with its version, or `not displayed`) | |
@@ -29,15 +29,16 @@ grader find your answers by them. You can add rows to any table, but never remov
 
 | | |
 | --- | --- |
-| File and function (or "inside the page component") | |
-| Its inputs | |
-| What it returned | |
-| How the page used it | |
+| File and function (or "inside the page component") | Inside the check() function in week-07/app/src/App.tsx |
+| Its inputs | Start time, end time, current time, blocked status, and existing room bookings |
+| What it returned | The decision logic produced a boolean (true or false) |
+| How the page used it | The page stored the decision in result and displayed Available or Unavailable |
 
 **What I changed to extract `canBook`.** Say which file it now lives in, what you moved, and why
 the behaviour did not change. Also say which file of the page now calls it. 40 words or more.
 
 <!-- Write below this line -->
+I extracted the booking availability logic from the `check()` function in `App.tsx` into a separate file called `src/booking.ts`. The new `canBook()` function receives the start time, end time, current time, blocked status, and existing bookings. It checks the time boundaries, maximum booking duration, blocked-room status, and overlapping bookings. I kept the original conditions unchanged to preserve the same behavior. The `App.tsx` component now imports and calls `canBook()` to display the availability result.
 
 ---
 
@@ -49,23 +50,23 @@ for every test. **The Expected column comes from AC1–AC4, never from the code.
 
 | ID | Candidate / changed input | Expected | AC | Reason (in your words) |
 | --- | --- | --- | --- | --- |
-| T01 | 660–720 (touching after) | true | AC4 | |
-| T02 | 540–570 (starts now) | false | AC1 | |
-| T03 | 720–720 (zero duration) | false | AC1 | |
-| T04 | 750–720 (reversed) | false | AC1 | |
-| T05 | 1380–1441 (past day end) | false | AC1 | |
-| T06 | 720–840 (120 minutes) | true | AC2 | |
-| T07 | 720–841 (121 minutes) | false | AC2 | |
-| T08 | 570–600 (touching before) | true | AC4 | |
-| T09 | 630–690 (partial overlap) | false | AC4 | |
-| T10 | 570–690 (contains booking) | false | AC4 | |
-| T11 | 615–645 (inside booking) | false | AC4 | |
-| T12 | 600–660 (identical interval) | false | AC4 | |
-| T13 | 660–720, blocked = true | false | AC3 | |
-| T14 | 630–690, bookings = [] | true | AC4 | |
-| AC5 | an Available request — the bookings after the call equal the bookings before | true, data unchanged | AC5 | |
-| X1 | | | | |
-| X2 | | | | |
+| T01 | 660–720 (touching after) | true | AC4 | The new booking starts exactly when the existing booking ends, so there is no overlap. |
+| T02 | 540–570 (starts now) | false | AC1 | The start time equals the current time, but a booking must start in the future. |
+| T03 | 720–720 (zero duration) | false | AC1 | The start and end times are equal, so the booking has no duration. |
+| T04 | 750–720 (reversed) | false | AC1 | The end time is earlier than the start time, making the interval invalid. |
+| T05 | 1380–1441 (past day end) | false | AC1 | The end time is greater than 1440, which is outside the allowed day. |
+| T06 | 720–840 (120 minutes) | true | AC2 | The booking lasts exactly 120 minutes, which is allowed. |
+| T07 | 720–841 (121 minutes) | false | AC2 | The booking lasts 121 minutes, exceeding the maximum duration. |
+| T08 | 570–600 (touching before) | true | AC4 | The new booking ends exactly when the existing booking starts, so it is allowed.|
+| T09 | 630–690 (partial overlap) | false | AC4 | The requested time partially overlaps the existing booking. |
+| T10 | 570–690 (contains booking) | false | AC4 | The requested interval contains the entire existing booking. |
+| T11 | 615–645 (inside booking) | false | AC4 | The requested interval is completely inside the existing booking. |
+| T12 | 600–660 (identical interval) | false | AC4 | The requested interval is identical to an existing booking. |
+| T13 | 660–720, blocked = true | false | AC3 | The room is blocked, so booking is not allowed even if the time is free. |
+| T14 | 630–690, bookings = [] | true | AC4 |There are no existing bookings, so the requested interval has no conflict. |
+| AC5 | an Available request — the bookings after the call equal the bookings before | true, data unchanged | AC5 | The function should return true for a valid request without modifying the original bookings. |
+| X1 |1439–1440 | true | AC1 | The booking ends exactly at the allowed day boundary and lasts one minute. |
+| X2 | 660–720, bookings = [{ start: 600, end: 660 }, { start: 720, end: 780 }] |true | AC4 | The requested interval touches both existing bookings without overlapping them.|
 
 X1 and X2 are **your own two cases**: a boundary or a state that T01–T14 do not reach. Fill all
 five columns.

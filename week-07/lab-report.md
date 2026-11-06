@@ -203,7 +203,25 @@ The **real** terminal output of the first run of the first suite, pasted unedite
 is not a run.
 
 ```text
-(paste here)
+**Command:**
+`npx vitest run src/booking.test.ts`
+
+**First run result:**
+```text
+RUN  v1.6.1 C:/Users/Kabyl Daryn/se-practice/week-07/app
+
+✓ src/booking.test.ts (19)
+
+Test Files  1 passed (1)
+     Tests  19 passed (19)
+  Duration  1.63s
+```
+
+**Explanation:**
+
+All 19 tests passed on the first run. The test suite successfully checked the booking time boundaries, maximum duration, blocked-room behavior, overlapping bookings, and preservation of booking data.
+
+The first suite did not reveal a functional defect in `canBook`. However, passing tests do not guarantee that the suite can detect incorrect implementations. I will improve the test structure and use mutation testing to check whether the tests detect deliberate defects.
 ```
 
 **Each failure, diagnosed** (the deck's table: import/runner error · assertion mismatch · result

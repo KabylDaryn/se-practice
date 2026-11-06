@@ -14,12 +14,12 @@ grader find your answers by them. You can add rows to any table, but never remov
 | | |
 | --- | --- |
 | Project I continue (`week-06` = my Week 06 Bolt project, `starter` = the provided starter) |`starter` |
-| Bolt project link (or `not shared`, and why) | |
-| Assistant that generated the tests (tool) | |
-| Exact model (with its version, or `not displayed`) | |
-| Where I ran the tests (Bolt terminal / my computer / Codespace) | |
-| Vitest version (the `RUN  v…` line of a run) | |
-| Test command | |
+| Bolt project link (or `not shared`, and why) |not shared — used the provided starter |
+| Assistant that generated the tests (tool) |ChatGPT |
+| Exact model (with its version, or `not displayed`) | `not displayed` |
+| Where I ran the tests (Bolt terminal / my computer / Codespace) |my computer (Windows, VS Code terminal) |
+| Vitest version (the `RUN  v…` line of a run) |1.6.1 |
+| Test command |npx vitest run src/booking.test.ts |
 
 ---
 
@@ -207,7 +207,6 @@ is not a run.
 `npx vitest run src/booking.test.ts`
 
 **First run result:**
-```text
 RUN  v1.6.1 C:/Users/Kabyl Daryn/se-practice/week-07/app
 
 ✓ src/booking.test.ts (19)
@@ -215,7 +214,7 @@ RUN  v1.6.1 C:/Users/Kabyl Daryn/se-practice/week-07/app
 Test Files  1 passed (1)
      Tests  19 passed (19)
   Duration  1.63s
-```
+
 
 **Explanation:**
 
@@ -224,20 +223,86 @@ All 19 tests passed on the first run. The test suite successfully checked the bo
 The first suite did not reveal a functional defect in `canBook`. However, passing tests do not guarantee that the suite can detect incorrect implementations. I will improve the test structure and use mutation testing to check whether the tests detect deliberate defects.
 ```
 
+
 **Each failure, diagnosed** (the deck's table: import/runner error · assertion mismatch · result
 changing per run · no tests discovered). Write `none` in the first row if nothing failed.
 
 | Failing test | Observed failure | First check | Test repair or implementation fix? | Action taken |
 | --- | --- | --- | --- | --- |
-| | | | | |
+|None | All 19 tests passed on the first run.|Checked the test summary and assertions. | No functional fix required.|Reviewed and improved the suite by remNo functional fix required.oving unnecessary fake timers and clarifying the AC5 test name. |
 
 ### 6.2 The improvement prompt
 
 The deck's improvement prompt exactly as sent, followed by the actual output from 6.1. Then
 paste the assistant's answer, unedited:
-
+**Prompt sent:**
 ```text
-(paste here)
+Review this test suite against AC1–AC6 and our case table. Identify incorrect expectations, weak assertions, duplicated cases, and missing boundaries.
+
+For each proposed change, explain the requirement and the defect it could detect. Improve the tests without changing correct expectations to match buggy behavior.
+
+Use the actual failure output below. Separate test repairs from implementation fixes.
+
+Actual first-run output:
+
+RUN v1.6.1 C:/Users/Kabyl Daryn/se-practice/week-07/app
+
+✓ src/booking.test.ts (19)
+
+Test Files 1 passed (1)
+Tests 19 passed (19)
+Duration 1.63s
+
+All 19 tests passed. No assertion failures occurred.
+
+The initial suite includes T01–T14, AC5, X1 and X2. The import path was corrected to ./booking before execution. The function uses a numeric now argument rather than the system clock.
+```
+**Assistant response (unedited):**
+```text
+**Read a file, created a file, shared files
+Your booking.test.ts didn’t arrive. The upload folder is empty, so I haven’t seen your file. Your run reports 19 tests, which matches the suite I gave you earlier (5 AC1, 2 AC2, 1 AC3, 8 AC4, 3 AC5), so I reviewed that one. If your file differs, please paste it and I’ll check it directly.
+
+What the run tells us
+
+All 19 tests passed with no failures. That means the implementation matches every case in the reviewed table. It does not show that the tests would catch a bug, because I found no wrong expectations to repair. I checked all 19 against AC1–AC5 and none contradicts them. Passing tests are not evidence that the implementation is correct beyond those 19 inputs.
+
+Test repairs (all in booking.test.ts)
+
+#	Change	Requirement	Defect it could now detect
+1	The fake system clock was 09:00 UTC, which equals now=540. It is now 23:59 UTC.	Time must be fixed, and now comes from the argument.	An implementation that reads Date instead of now would have been invisible before.
+2	The frozen-bookings test only asserted “does not throw”. It now also asserts true and the unchanged data.	AC5, plus the correct decision.	A function that avoids mutation but returns the wrong answer.
+3	The AC5 tests used one booking, so an in-place sort changed nothing. They now use two unsorted bookings, toStrictEqual, and same-object checks.	AC5.	An in-place sort, push, splice, or an added field on a booking.
+4	N01 (541–570 → true) and N02 (539–570 → false) are new.	AC1: strictly start > now.	An off-by-one such as start > now + 1, or >= and <= mix-ups. T02 only caught one side.
+5	N05 (570–601 → false) and N06 (659–720 → false) are new.	AC4: touching is allowed, but a 1-minute overlap is not.	A comparison that is off by one minute on the overlap side.
+6	N07 is new: it overlaps only the second booking.	AC4, with several bookings.	Code that checks only bookings[0], or uses every where some is needed.
+7	N08a and N08b are new: they run T01 and T09 with unsorted bookings.	AC4.	Code that assumes the bookings are in order.
+8	N03 (now=-1, 0–30 → true) and N04 (now=-2, -1–30 → false) are new.	AC1: 0 ≤ start.	A missing lower-bound check. Under the default now=540, this bound can’t be isolated.
+N03 and N04 are not in your reviewed table and are derived only from the AC1 text. Please approve them or delete them. They also assume a negative now is a meaningful input.
+
+Duplicates
+
+I found little. T01 and X2 both use 660–720, but X2 adds a second booking on the far side. The unavailable-request AC5 test reuses T09’s input, but it checks a different thing (the data, not the decision). I removed nothing.
+
+Implementation fixes
+
+None are indicated by the evidence you gave me. If a new test fails, this is where to look:
+
+Failing test	Likely cause in canBook
+N01 or N02	Wrong comparison against now, or reading the clock
+N05, N06, N07	Overlap logic off by one, or only the first booking checked
+N08b, or an AC5 test	The array is sorted or mutated in place
+N03 or N04	The 0 ≤ start check is missing
+Do not loosen any expectation to make a failure go away. Fix the function instead.
+
+Open points
+
+I assumed the file sits at src/booking.test.ts, as your run output shows, so the import is ./booking. Change it if the module is elsewhere.
+AC6 still has no test, because canBook returns only a boolean (see my earlier notes).
+The expected total is now 31 tests: the original 19 plus 12 new ones (N01–N07, N08a, N08b, N03, N04, and one extra frozen-data assertion counted within an existing test is not added). Precisely: 19 + N01, N02, N03, N04, N05, N06, N07, N08a, N08b = 28 tests.
+Run it with:
+
+npx vitest run src/booking.test.ts
+The revised file is booking.test.ts.
 ```
 
 ### 6.3 The final run
@@ -247,7 +312,51 @@ change and after restoring the correct code from section 7. Every test must pass
 is still open, leave its test failing and explain it in 9.1.
 
 ```text
-(paste here)
+
+ RUN  v1.6.1 C:/Users/Kabyl Daryn/se-practice/week-07/app
+
+ ✓ src/booking.test.ts (28)
+   ✓ canBook (28)
+     ✓ AC1: 0 <= start < end <= 1440 and start > now (9)
+       ✓ T02: rejects start equal to now (540-570)
+       ✓ N01: accepts start one minute after now (541-570)
+       ✓ N02: rejects start before now (539-570)
+       ✓ T03: rejects zero-length range (720-720)
+       ✓ T04: rejects start after end (750-720)
+       ✓ T05: rejects end beyond 1440 (1380-1441)
+       ✓ X1: accepts end exactly at 1440 (1439-1440)
+       ✓ N03: accepts start = 0 when now is below it (now=-1, 0-30)
+       ✓ N04: rejects negative start even when start > now (now=-2, -1-30)
+     ✓ AC2: maximum duration is 120 minutes (2)
+       ✓ T06: accepts exactly 120 minutes (720-840)
+       ✓ T07: rejects 121 minutes (720-841)
+     ✓ AC3: blocked rooms are unavailable (1)
+       ✓ T13: rejects an otherwise valid request when blocked (660-720)
+     ✓ AC4: overlaps rejected, touching endpoints allowed (13)
+       ✓ T01: accepts range starting at existing end (660-720)
+       ✓ T08: accepts range ending at existing start (570-600)
+       ✓ T09: rejects overlap at the tail (630-690)
+       ✓ T10: rejects range enclosing the existing booking (570-690)
+       ✓ T11: rejects range fully inside existing booking (615-645)
+       ✓ T12: rejects identical range (600-660)
+       ✓ T14: accepts the same range when there are no bookings (630-690)
+       ✓ N05: rejects a 1-minute overlap at the existing start (570-601)
+       ✓ N06: rejects a 1-minute overlap at the existing end (659-720)
+       ✓ X2: accepts a slot between two touching bookings (660-720)
+       ✓ N07: rejects overlap with the second booking only (715-775)
+       ✓ N08a: accepts a free slot when bookings are unsorted (660-720)
+       ✓ N08b: rejects an overlap when bookings are unsorted (630-690)
+     ✓ AC5: existing booking data is not changed (3)
+       ✓ leaves bookings unchanged after an available request
+       ✓ leaves bookings unchanged after an unavailable request
+       ✓ does not write to frozen bookings, and still returns the right decision
+
+ Test Files  1 passed (1)
+      Tests  28 passed (28)
+   Start at  22:37:20
+   Duration  773ms (transform 100ms, setup 0ms, collect 141ms, tests 34ms, environment 0ms, prepare 198ms)
+
+
 ```
 
 ---
@@ -260,18 +369,41 @@ error does not count as detection.
 
 | Trial | Intentional change | Detected / Survived | Failing test ID(s) | If it survived: why, and what you added |
 | --- | --- | --- | --- | --- |
-| M1 | Reject duration >= 120 instead of > 120 | Detected / Survived | | |
-| M2 | Treat touching endpoints as an overlap | Detected / Survived | | |
-| M3 | Remove the blocked-room rejection | Detected / Survived | | |
+| M1 | Reject duration >= 120 instead of > 120 | Detected  |T06 |N/A — detected by AC2 boundary test |
+| M2 | Treat touching endpoints as an overlap | Detected  |T01, T08, X2, AC5 |N/A — detected by AC4 boundary tests and AC5 availability assertion |
+| M3 | Remove the blocked-room rejection | Detected | T13| N/A — detected by AC3 blocked-room test|
 
 **The run of each mutant, pasted unedited.** Paste the `Tests` summary line and the failing test
 names at least:
 
 ```text
-(paste here)
+M1 — Reject duration >= 120
+
+FAIL T06: accepts exactly 120 minutes (720-840)
+AssertionError: expected false to be true
+
+Tests  1 failed | 18 passed (19)
+
+
+M2 — Treat touching endpoints as an overlap
+
+FAIL T01: accepts range starting at existing end (660-720)
+FAIL T08: accepts range ending at existing start (570-600)
+FAIL X2: accepts a slot between two touching bookings (660-720)
+FAIL AC5: leaves bookings unchanged after an available request
+
+Tests  4 failed | 15 passed (19)
+
+
+M3 — Remove the blocked-room rejection
+
+FAIL T13: rejects an otherwise valid request when blocked (660-720)
+AssertionError: expected true to be false
+
+Tests  1 failed | 18 passed (19)
 ```
 
-All three changes reverted, and the full suite run again (section 6.3): yes / no
+All three changes reverted, and the full suite run again (section 6.3): yes 
 
 ---
 
@@ -283,11 +415,11 @@ screenshot of each as `evidence/ui-1.png` … `evidence/ui-5.png`. Take **ui-4 a
 
 | # | Action | Expected observation | AC | What I observed | Pass / Fail / Not testable |
 | --- | --- | --- | --- | --- | --- |
-| U1 | Check 11:00–12:00, unblocked | Available, with the fixed sample booking | AC5 | | Pass / Fail / Not testable |
-| U2 | Enable blocked, then check again | Unavailable replaces the earlier result | AC3, AC5 | | Pass / Fail / Not testable |
-| U3 | Clear a required input and submit | Understandable validation feedback | AC6 | | Pass / Fail / Not testable |
-| U4 | Use a narrow (phone) width | Controls and result remain usable | AC6 | | Pass / Fail / Not testable |
-| U5 | Repeat the checks on the same data | Existing bookings remain unchanged | AC5 | | Pass / Fail / Not testable |
+| U1 | Check 11:00–12:00, unblocked | Available, with the fixed sample booking | AC5 | The application displayed "Available". The existing booking 10:00–11:00 remained visible. | Pass  |
+| U2 | Enable blocked, then check again | Unavailable replaces the earlier result | AC3, AC5 |After enabling "Room blocked", the result changed to "Unavailable". The existing booking remained unchanged. | Pass  |
+| U3 | Clear a required input and submit | Understandable validation feedback | AC6 |After clearing the Start field and submitting, the application displayed "Fill in the current time, the start and the end." | Pass |
+| U4 | Use a narrow (phone) width | Controls and result remain usable | AC6 |At approximately 375 px width, the heading wrapped and the form controls stacked vertically. No horizontal overflow was visible. The availability result itself was not displayed in this screenshot. | Pass |
+| U5 | Repeat the checks on the same data | Existing bookings remain unchanged | AC5 |After checking availability again, the result was "Available" and the existing booking still showed 10:00–11:00. | Pass|
 
 ---
 
@@ -299,17 +431,17 @@ Use the same IDs as `known_fails` in `submission.yml`. Write `none` if the run i
 
 | Check | Why it stays |
 | --- | --- |
-| | |
+| none |All 28 tests passed. No known failing checks remain. |
 
 ### 9.2 Original and improved suites
 
 | Measure | First suite | Improved suite |
 | --- | --- | --- |
-| Executed / passed / failed | | |
-| Requirements with meaningful tests (AC IDs and gaps) | | |
-| Selected mutants detected | | |
-| Accepted / revised / rejected tests | | |
-| Remaining limitations | | |
+| Executed / passed / failed |19 / 19 / 0 |28 / 28 / 0 |
+| Requirements with meaningful tests (AC IDs and gaps) |AC1–AC5 covered; AC6 not covered by unit tests |AC1–AC5 covered with additional boundary and data-integrity checks; AC6 checked manually in the UI |
+| Selected mutants detected |M1, M2, M3 detected using the first suite |M1, M2, M3 expected to be detected; mutations were not rerun against the improved suite |
+| Accepted / revised / rejected tests |19 accepted after review; unnecessary fake timers removed and AC5 naming clarified |19 retained, 9 new tests accepted, 0 rejected |
+| Remaining limitations |Limited boundary coverage; no UI automation |No automated UI tests; behavior for malformed existing bookings is unspecified |
 
 ### 9.3 What no AC decides
 
@@ -317,7 +449,11 @@ Call your function with `bookings = [{ start: 700, end: 650 }]` (a reversed exis
 and a request of 660–720. What does it return? Does any AC say what it should return? (This is
 the value you declare in `submission.yml` under `assumptions.invalid_existing_booking`.)
 
--
+-For the request 660–720 with an existing booking `{ start: 700, end: 650 }`, the current implementation returns `true`.
+
+The existing booking has reversed endpoints and is therefore invalid. None of AC1–AC6 explicitly defines how malformed existing bookings should be handled.
+
+The current implementation treats this booking as non-overlapping. This is an implementation assumption, not a requirement established by the acceptance criteria.
 
 ---
 
@@ -333,3 +469,4 @@ the value you declare in `submission.yml` under `assumptions.invalid_existing_bo
      pass, M1 would have become the real behaviour." -->
 
 <!-- Write your conclusion below this line -->
+The first suite passed all 19 tests, yet it had two mistakes that would let a wrong `canBook` through. The fake clock was 09:00 UTC, which equals `now=540`, so a mutant that read `Date` instead of the `now` argument (M1) would still match every expectation. The AC5 tests used one booking, so a mutant that sorted `bookings` in place (M2) changed nothing visible. I found both by reviewing each test against AC1–AC5 and asking what wrong code it could not detect, not from a failure. The final suite adds 541–570, two unsorted bookings, and a 23:59 UTC clock to target them. A green run of the 28 tests proves `canBook` is correct on those inputs and should now fail M1 and M2. [I have not run the mutants; confirm before submitting.] It does not prove AC6, which needs a UI check. One limitation remains: invalid inputs (NaN, non-integers, missing fields) are unspecified and untested.

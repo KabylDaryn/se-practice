@@ -192,3 +192,36 @@ describe("canBook", () => {
     });
   });
 });
+describe("Week 08 regression tests", () => {
+  it("BUG-A: touching endpoints must be allowed", () => {
+    const result = canBook({
+      start: 660,
+      end: 720,
+      now: 540,
+      blocked: false,
+      bookings: [{ start: 600, end: 660 }],
+    });
+
+    expect(result).toBe(true);
+  });
+
+  it("BUG-B: an available request must not modify bookings", () => {
+    const bookings = [
+      { start: 900, end: 960 },
+      { start: 600, end: 660 },
+    ];
+
+    const before = structuredClone(bookings);
+
+    const result = canBook({
+      start: 720,
+      end: 780,
+      now: 540,
+      blocked: false,
+      bookings,
+    });
+
+    expect(result).toBe(true);
+    expect(bookings).toStrictEqual(before);
+  });
+});

@@ -1,0 +1,239 @@
+
+ RUN  v1.6.1 C:/Users/Kabyl Daryn/se-practice/week-08/app
+
+ тЬУ src/booking.test.ts > canBook > AC1: 0 <= start < end <= 1440 and start > now > T02: rejects start equal to now (540-570)
+ тЬУ src/booking.test.ts > canBook > AC1: 0 <= start < end <= 1440 and start > now > N01: accepts start one minute after now (541-570)
+ тЬУ src/booking.test.ts > canBook > AC1: 0 <= start < end <= 1440 and start > now > N02: rejects start before now (539-570)
+ тЬУ src/booking.test.ts > canBook > AC1: 0 <= start < end <= 1440 and start > now > T03: rejects zero-length range (720-720)
+ тЬУ src/booking.test.ts > canBook > AC1: 0 <= start < end <= 1440 and start > now > T04: rejects start after end (750-720)
+ тЬУ src/booking.test.ts > canBook > AC1: 0 <= start < end <= 1440 and start > now > T05: rejects end beyond 1440 (1380-1441)
+ тЬУ src/booking.test.ts > canBook > AC1: 0 <= start < end <= 1440 and start > now > X1: accepts end exactly at 1440 (1439-1440)
+ тЬУ src/booking.test.ts > canBook > AC1: 0 <= start < end <= 1440 and start > now > N03: accepts start = 0 when now is below it (now=-1, 0-30)
+ тЬУ src/booking.test.ts > canBook > AC1: 0 <= start < end <= 1440 and start > now > N04: rejects negative start even when start > now (now=-2, -1-30)
+ тЬУ src/booking.test.ts > canBook > AC2: maximum duration is 120 minutes > T06: accepts exactly 120 minutes (720-840)
+ тЬУ src/booking.test.ts > canBook > AC2: maximum duration is 120 minutes > T07: rejects 121 minutes (720-841)
+ тЬУ src/booking.test.ts > canBook > AC3: blocked rooms are unavailable > T13: rejects an otherwise valid request when blocked (660-720)
+ ├Ч src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > T01: accepts range starting at existing end (660-720)
+   тЖТ expected false to be true // Object.is equality
+ ├Ч src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > T08: accepts range ending at existing start (570-600)
+   тЖТ expected false to be true // Object.is equality
+ тЬУ src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > T09: rejects overlap at the tail (630-690)
+ тЬУ src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > T10: rejects range enclosing the existing booking (570-690)
+ тЬУ src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > T11: rejects range fully inside existing booking (615-645)
+ тЬУ src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > T12: rejects identical range (600-660)
+ тЬУ src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > T14: accepts the same range when there are no bookings (630-690)
+ тЬУ src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > N05: rejects a 1-minute overlap at the existing start (570-601)
+ тЬУ src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > N06: rejects a 1-minute overlap at the existing end (659-720)
+ ├Ч src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > X2: accepts a slot between two touching bookings (660-720)
+   тЖТ expected false to be true // Object.is equality
+ тЬУ src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > N07: rejects overlap with the second booking only (715-775)
+ ├Ч src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > N08a: accepts a free slot when bookings are unsorted (660-720)
+   тЖТ expected false to be true // Object.is equality
+ тЬУ src/booking.test.ts > canBook > AC4: overlaps rejected, touching endpoints allowed > N08b: rejects an overlap when bookings are unsorted (630-690)
+ ├Ч src/booking.test.ts > canBook > AC5: existing booking data is not changed > AC5: leaves bookings unchanged after an available request
+   тЖТ expected false to be true // Object.is equality
+ тЬУ src/booking.test.ts > canBook > AC5: existing booking data is not changed > leaves bookings unchanged after an unavailable request
+ ├Ч src/booking.test.ts > canBook > AC5: existing booking data is not changed > does not write to frozen bookings, and still returns the right decision
+   тЖТ expected false to be true // Object.is equality
+ ├Ч src/booking.test.ts > Week 08 regression tests > BUG-A: touching endpoints must be allowed
+   тЖТ expected false to be true // Object.is equality
+ ├Ч src/booking.test.ts > Week 08 regression tests > BUG-B: an available request must not modify bookings
+   тЖТ expected [ { start: 900, end: 960 }, тАж(2) ] to strictly equal [ { start: 900, end: 960 }, тАж(1) ]
+
+node.exe : тОптОптОптОптОптОптОп Failed Tests 8 тОптОптОптОптОптОптОп
+строка:1 знак:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\Kabyl Daryn\AppData\Ro ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (тОптОптОпт...птОптОптОп:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+ FAIL  src/booking.test.ts > canBook > AC4: overlaps rejected, 
+touching endpoints allowed > T01: accepts range starting at existing end (660-720)
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ тЭп src/booking.test.ts:82:31
+     80|   describe("AC4: overlaps rejected, touching endpoints allowed", 
+() =>тАж
+     81|     it("T01: accepts range starting at existing end (660-720)", 
+() => {
+     82|       expect(check(660, 
+720)).toBe(true);
+       |                               ^
+     83|     });
+     84| 
+
+тОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[1/8]тОп
+
+ FAIL  src/booking.test.ts > canBook > AC4: overlaps rejected, 
+touching endpoints allowed > T08: accepts range ending at existing start (570-600)
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ тЭп src/booking.test.ts:86:31
+     84| 
+     85|     it("T08: accepts range ending at existing start (570-600)", 
+() => {
+     86|       expect(check(570, 
+600)).toBe(true);
+       |                               ^
+     87|     });
+     88| 
+
+тОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[2/8]тОп
+
+ FAIL  src/booking.test.ts > canBook > AC4: overlaps rejected, 
+touching endpoints allowed > X2: accepts a slot between two touching bookings (660-720)
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ тЭп src/booking.test.ts:122:45
+    120|         { start: 720, end: 780 },
+    121|       ];
+    122|       expect(check(660, 720, { 
+bookings })).toBe(true);
+       |                                             ^
+    123|     });
+    124| 
+
+тОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[3/8]тОп
+
+ FAIL  src/booking.test.ts > canBook > AC4: overlaps rejected, 
+touching endpoints allowed > N08a: accepts a free slot when bookings are unsorted (660-720)
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ тЭп src/booking.test.ts:138:45
+    136|         { start: 600, end: 660 },
+    137|       ];
+    138|       expect(check(660, 720, { 
+bookings })).toBe(true);
+       |                                             ^
+    139|     });
+    140| 
+
+тОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[4/8]тОп
+
+ FAIL  src/booking.test.ts > canBook > AC5: existing booking data is 
+not changed > AC5: leaves bookings unchanged after an available request
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ тЭп src/booking.test.ts:166:22
+    164|       const result = canBook({ start: 
+660, end: 720, now: 540, blockedтАж
+    165| 
+    166|       expect(result).toBe(true);
+       |                      ^
+    167|       expect(bookings).toStrictEqual(before);
+    168|       
+expect(bookings[0]).toBe(refs[0]);
+
+тОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[5/8]тОп
+
+ FAIL  src/booking.test.ts > canBook > AC5: existing booking data is 
+not changed > does not write to frozen bookings, and still returns the right decision
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ тЭп src/booking.test.ts:190:22
+    188|       const result = canBook({ start: 
+660, end: 720, now: 540, blockedтАж
+    189| 
+    190|       expect(result).toBe(true);
+       |                      ^
+    191|       expect(bookings).toStrictEqual([{ start: 
+600, end: 660 }]);
+    192|     });
+
+тОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[6/8]тОп
+
+ FAIL  src/booking.test.ts > Week 08 regression tests > BUG-A: 
+touching endpoints must be allowed
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ тЭп src/booking.test.ts:205:20
+    203|     });
+    204| 
+    205|     expect(result).toBe(true);
+       |                    ^
+    206|   });
+    207| 
+
+тОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[7/8]тОп
+
+ FAIL  src/booking.test.ts > Week 08 regression tests > BUG-B: an 
+available request must not modify bookings
+AssertionError: expected [ { start: 900, end: 960 }, тАж(2) ] to strictly equal [ { start: 900, end: 
+960 }, тАж(1) ]
+
+- Expected
++ Received
+
+  Array [
+    Object {
+      "end": 960,
+      "start": 900,
+    },
+    Object {
+      "end": 660,
+      "start": 600,
+    },
++   Object {
++     "end": 780,
++     "start": 720,
++   },
+  ]
+
+ тЭп src/booking.test.ts:225:22
+    223| 
+    224|     expect(result).toBe(true);
+    225|     expect(bookings).toStrictEqual(before);
+       |                      ^
+    226|   });
+    227| });
+
+тОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[8/8]тОп
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 22 passed (30)
+   Start at  22:59:49
+   Duration  632ms (transform 57ms, setup 0ms, collect 60ms, tests 30ms, environment 0ms, prepare 221ms)
+

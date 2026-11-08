@@ -1,0 +1,239 @@
+﻿
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Users/Kabyl Daryn/se-practice/week-08/app[39m
+
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mT02: rejects start equal to now (540-570)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mN01: accepts start one minute after now (541-570)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mN02: rejects start before now (539-570)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mT03: rejects zero-length range (720-720)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mT04: rejects start after end (750-720)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mT05: rejects end beyond 1440 (1380-1441)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mX1: accepts end exactly at 1440 (1439-1440)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mN03: accepts start = 0 when now is below it (now=-1, 0-30)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mN04: rejects negative start even when start > now (now=-2, -1-30)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC2: maximum duration is 120 minutes[2m > [22mT06: accepts exactly 120 minutes (720-840)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC2: maximum duration is 120 minutes[2m > [22mT07: rejects 121 minutes (720-841)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC3: blocked rooms are unavailable[2m > [22mT13: rejects an otherwise valid request when blocked (660-720)
+ [31m├Ч[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT01: accepts range starting at existing end (660-720)
+[31m   тЖТ expected false to be true // Object.is equality[39m
+ [31m├Ч[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT08: accepts range ending at existing start (570-600)
+[31m   тЖТ expected false to be true // Object.is equality[39m
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT09: rejects overlap at the tail (630-690)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT10: rejects range enclosing the existing booking (570-690)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT11: rejects range fully inside existing booking (615-645)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT12: rejects identical range (600-660)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT14: accepts the same range when there are no bookings (630-690)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mN05: rejects a 1-minute overlap at the existing start (570-601)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mN06: rejects a 1-minute overlap at the existing end (659-720)
+ [31m├Ч[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mX2: accepts a slot between two touching bookings (660-720)
+[31m   тЖТ expected false to be true // Object.is equality[39m
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mN07: rejects overlap with the second booking only (715-775)
+ [31m├Ч[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mN08a: accepts a free slot when bookings are unsorted (660-720)
+[31m   тЖТ expected false to be true // Object.is equality[39m
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mN08b: rejects an overlap when bookings are unsorted (630-690)
+ [31m├Ч[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC5: existing booking data is not changed[2m > [22mAC5: leaves bookings unchanged after an available request
+[31m   тЖТ expected false to be true // Object.is equality[39m
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC5: existing booking data is not changed[2m > [22mleaves bookings unchanged after an unavailable request
+ [31m├Ч[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC5: existing booking data is not changed[2m > [22mdoes not write to frozen bookings, and still returns the right decision
+[31m   тЖТ expected false to be true // Object.is equality[39m
+ [31m├Ч[39m src/booking.test.ts[2m > [22mWeek 08 regression tests[2m > [22mBUG-A: touching endpoints must be allowed
+[31m   тЖТ expected false to be true // Object.is equality[39m
+ [31m├Ч[39m src/booking.test.ts[2m > [22mWeek 08 regression tests[2m > [22mBUG-B: an available request must not modify bookings
+[31m   тЖТ expected [ { start: 900, end: 960 }, тАж(2) ] to strictly equal [ { start: 900, end: 960 }, тАж(1) ][39m
+
+node.exe : [31mтОптОптОптОптОптОптОп[1m[7m Failed Tests 8 [27m[22mтОптОптОптОптОптОптОп[39m
+строка:1 знак:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\Kabyl Daryn\AppData\Ro ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([31mтОптОптОпт...птОптОптОп[39m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+[31m[1m[7m FAIL [27m[22m[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, 
+touching endpoints allowed[2m > [22mT01: accepts range starting at existing end (660-720)
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2mтЭп[22m src/booking.test.ts:[2m82:31[22m[39m
+    [90m 80| [39m  [34mdescribe[39m([32m"AC4: overlaps rejected, touching endpoints allowed"[39m[33m,[39m 
+() [33m=>[39mтАж
+    [90m 81| [39m    [34mit[39m([32m"T01: accepts range starting at existing end (660-720)"[39m[33m,[39m 
+() [33m=>[39m {
+    [90m 82| [39m      [34mexpect[39m([34mcheck[39m([34m660[39m[33m,[39m 
+[34m720[39m))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   | [39m                              [31m^[39m
+    [90m 83| [39m    })[33m;[39m
+    [90m 84| [39m
+
+[31m[2mтОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[1/8]тОп[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, 
+touching endpoints allowed[2m > [22mT08: accepts range ending at existing start (570-600)
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2mтЭп[22m src/booking.test.ts:[2m86:31[22m[39m
+    [90m 84| [39m
+    [90m 85| [39m    [34mit[39m([32m"T08: accepts range ending at existing start (570-600)"[39m[33m,[39m 
+() [33m=>[39m {
+    [90m 86| [39m      [34mexpect[39m([34mcheck[39m([34m570[39m[33m,[39m 
+[34m600[39m))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   | [39m                              [31m^[39m
+    [90m 87| [39m    })[33m;[39m
+    [90m 88| [39m
+
+[31m[2mтОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[2/8]тОп[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, 
+touching endpoints allowed[2m > [22mX2: accepts a slot between two touching bookings (660-720)
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2mтЭп[22m src/booking.test.ts:[2m122:45[22m[39m
+    [90m120| [39m        { start[33m:[39m [34m720[39m[33m,[39m end[33m:[39m [34m780[39m }[33m,[39m
+    [90m121| [39m      ][33m;[39m
+    [90m122| [39m      [34mexpect[39m([34mcheck[39m([34m660[39m[33m,[39m [34m720[39m[33m,[39m { 
+bookings }))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   | [39m                                            [31m^[39m
+    [90m123| [39m    })[33m;[39m
+    [90m124| [39m
+
+[31m[2mтОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[3/8]тОп[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, 
+touching endpoints allowed[2m > [22mN08a: accepts a free slot when bookings are unsorted (660-720)
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2mтЭп[22m src/booking.test.ts:[2m138:45[22m[39m
+    [90m136| [39m        { start[33m:[39m [34m600[39m[33m,[39m end[33m:[39m [34m660[39m }[33m,[39m
+    [90m137| [39m      ][33m;[39m
+    [90m138| [39m      [34mexpect[39m([34mcheck[39m([34m660[39m[33m,[39m [34m720[39m[33m,[39m { 
+bookings }))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   | [39m                                            [31m^[39m
+    [90m139| [39m    })[33m;[39m
+    [90m140| [39m
+
+[31m[2mтОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[4/8]тОп[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC5: existing booking data is 
+not changed[2m > [22mAC5: leaves bookings unchanged after an available request
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2mтЭп[22m src/booking.test.ts:[2m166:22[22m[39m
+    [90m164| [39m      [35mconst[39m result [33m=[39m [34mcanBook[39m({ start[33m:[39m 
+[34m660[39m[33m,[39m end[33m:[39m [34m720[39m[33m,[39m now[33m:[39m [34m540[39m[33m,[39m blockedтАж
+    [90m165| [39m
+    [90m166| [39m      [34mexpect[39m(result)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   | [39m                     [31m^[39m
+    [90m167| [39m      [34mexpect[39m(bookings)[33m.[39m[34mtoStrictEqual[39m(before)[33m;[39m
+    [90m168| [39m      
+[34mexpect[39m(bookings[[34m0[39m])[33m.[39m[34mtoBe[39m(refs[[34m0[39m])[33m;[39m
+
+[31m[2mтОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[5/8]тОп[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC5: existing booking data is 
+not changed[2m > [22mdoes not write to frozen bookings, and still returns the right decision
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2mтЭп[22m src/booking.test.ts:[2m190:22[22m[39m
+    [90m188| [39m      [35mconst[39m result [33m=[39m [34mcanBook[39m({ start[33m:[39m 
+[34m660[39m[33m,[39m end[33m:[39m [34m720[39m[33m,[39m now[33m:[39m [34m540[39m[33m,[39m blockedтАж
+    [90m189| [39m
+    [90m190| [39m      [34mexpect[39m(result)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   | [39m                     [31m^[39m
+    [90m191| [39m      [34mexpect[39m(bookings)[33m.[39m[34mtoStrictEqual[39m([{ start[33m:[39m 
+[34m600[39m[33m,[39m end[33m:[39m [34m660[39m }])[33m;[39m
+    [90m192| [39m    })[33m;[39m
+
+[31m[2mтОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[6/8]тОп[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/booking.test.ts[2m > [22mWeek 08 regression tests[2m > [22mBUG-A: 
+touching endpoints must be allowed
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2mтЭп[22m src/booking.test.ts:[2m205:20[22m[39m
+    [90m203| [39m    })[33m;[39m
+    [90m204| [39m
+    [90m205| [39m    [34mexpect[39m(result)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   | [39m                   [31m^[39m
+    [90m206| [39m  })[33m;[39m
+    [90m207| [39m
+
+[31m[2mтОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[7/8]тОп[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/booking.test.ts[2m > [22mWeek 08 regression tests[2m > [22mBUG-B: an 
+available request must not modify bookings
+[31m[1mAssertionError[22m: expected [ { start: 900, end: 960 }, тАж(2) ] to strictly equal [ { start: 900, end: 
+960 }, тАж(1) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  Array [[22m
+[2m    Object {[22m
+[2m      "end": 960,[22m
+[2m      "start": 900,[22m
+[2m    },[22m
+[2m    Object {[22m
+[2m      "end": 660,[22m
+[2m      "start": 600,[22m
+[2m    },[22m
+[31m+   Object {[39m
+[31m+     "end": 780,[39m
+[31m+     "start": 720,[39m
+[31m+   },[39m
+[2m  ][22m
+
+[36m [2mтЭп[22m src/booking.test.ts:[2m225:22[22m[39m
+    [90m223| [39m
+    [90m224| [39m    [34mexpect[39m(result)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m225| [39m    [34mexpect[39m(bookings)[33m.[39m[34mtoStrictEqual[39m(before)[33m;[39m
+    [90m   | [39m                     [31m^[39m
+    [90m226| [39m  })[33m;[39m
+    [90m227| [39m})[33m;[39m
+
+[31m[2mтОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОптОп[8/8]тОп[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m8 failed[39m[22m[2m | [22m[1m[32m22 passed[39m[22m[90m (30)[39m
+[2m   Start at [22m 22:59:49
+[2m   Duration [22m 632ms[2m (transform 57ms, setup 0ms, collect 60ms, tests 30ms, environment 0ms, prepare 221ms)[22m
+

@@ -1,0 +1,49 @@
+
+schema: 1
+week: "08"
+
+student:
+  name: Kabyl Daryn
+  student_id: 24B032130
+  github: KabylDaryn
+
+assistant:
+  tool: ChatGPT
+  model: not displayed
+
+skill:
+  environment: prompt-only
+  invoked: not-shown
+
+project:
+  language: ts
+  vitest: 1.6.1
+
+counts:
+  tests_final: 30
+  buggy_failed: 6
+  defects_logged: 2
+  lines_changed: 2
+
+checker:
+  pass: 31
+  fail: 0
+  error: 0
+  commit: 8f726c6
+  known_fails: []
+
+verdict:
+  skill_helped: yes
+
+review_findings:
+  - "BUG-A: inclusive overlap comparisons rejected bookings with touching endpoints, violating AC4."
+  - "BUG-B: bookings.push modified the original bookings array, violating AC5."
+  - "BUG-A: regression test confirmed that touching endpoints must be allowed."
+  - "BUG-B: regression test confirmed that an available request must not modify bookings."
+  - "AC4 and AC5: after both minimal fixes, all 30 tests passed."
+
+honesty:
+  buggy_function_pasted_unchanged: yes
+  same_input_both_chats: yes
+  outputs_unedited: no
+  ai_usage_disclosed: yes

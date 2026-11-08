@@ -1,0 +1,39 @@
+﻿
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Users/Kabyl Daryn/se-practice/week-08/app[39m
+
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mT02: rejects start equal to now (540-570)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mN01: accepts start one minute after now (541-570)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mN02: rejects start before now (539-570)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mT03: rejects zero-length range (720-720)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mT04: rejects start after end (750-720)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mT05: rejects end beyond 1440 (1380-1441)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mX1: accepts end exactly at 1440 (1439-1440)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mN03: accepts start = 0 when now is below it (now=-1, 0-30)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC1: 0 <= start < end <= 1440 and start > now[2m > [22mN04: rejects negative start even when start > now (now=-2, -1-30)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC2: maximum duration is 120 minutes[2m > [22mT06: accepts exactly 120 minutes (720-840)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC2: maximum duration is 120 minutes[2m > [22mT07: rejects 121 minutes (720-841)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC3: blocked rooms are unavailable[2m > [22mT13: rejects an otherwise valid request when blocked (660-720)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT01: accepts range starting at existing end (660-720)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT08: accepts range ending at existing start (570-600)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT09: rejects overlap at the tail (630-690)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT10: rejects range enclosing the existing booking (570-690)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT11: rejects range fully inside existing booking (615-645)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT12: rejects identical range (600-660)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mT14: accepts the same range when there are no bookings (630-690)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mN05: rejects a 1-minute overlap at the existing start (570-601)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mN06: rejects a 1-minute overlap at the existing end (659-720)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mX2: accepts a slot between two touching bookings (660-720)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mN07: rejects overlap with the second booking only (715-775)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mN08a: accepts a free slot when bookings are unsorted (660-720)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC4: overlaps rejected, touching endpoints allowed[2m > [22mN08b: rejects an overlap when bookings are unsorted (630-690)
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC5: existing booking data is not changed[2m > [22mAC5: leaves bookings unchanged after an available request
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC5: existing booking data is not changed[2m > [22mleaves bookings unchanged after an unavailable request
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mcanBook[2m > [22mAC5: existing booking data is not changed[2m > [22mdoes not write to frozen bookings, and still returns the right decision
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mWeek 08 regression tests[2m > [22mBUG-A: touching endpoints must be allowed
+ [32mтЬУ[39m src/booking.test.ts[2m > [22mWeek 08 regression tests[2m > [22mBUG-B: an available request must not modify bookings
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m30 passed[39m[22m[90m (30)[39m
+[2m   Start at [22m 23:35:13
+[2m   Duration [22m 757ms[2m (transform 68ms, setup 0ms, collect 67ms, tests 11ms, environment 0ms, prepare 278ms)[22m
+

@@ -1,0 +1,53 @@
+
+schema: 1
+week: "10"
+
+student:
+  name: Kabyl Daryn
+  student_id: 24B032130
+  github: KabylDaryn
+
+assistant:
+  tool: ChatGPT
+  model: GPT-6
+  environment: chat
+
+project:
+  starting_point: week-08
+  baseline_commit: "4166a6c"
+  language: ts
+  vitest: "1.6.1"
+
+counts:
+  claims_challenged: 5
+  risks_registered: 5
+  risks_confirmed: 4
+  tests_final: 31
+  agents_lines_changed: 14
+
+audit:
+  level: 0
+
+decision:
+  top_two: [R1, R4]
+  mitigated: [R2, R1]
+  release: conditional
+
+checker:
+  pass: 31
+  fail: 0
+  error: 0
+  commit: "bc85133"
+  known_fails: []
+
+review_findings:
+  - "R1: App.tsx continued checking availability after detecting an invalid time range."
+  - "R2: canBook accepted fractional minutes because integer validation was missing."
+  - "R4: AGENTS.md incorrectly rejected touching endpoints, contradicting passing regression tests."
+  - "R3: AGENTS.md referenced npm run test:unit, but package.json has no such script."
+
+honesty:
+  review_was_read_only: yes
+  agents_patch_approved_by_me: yes
+  outputs_unedited: yes
+  ai_usage_disclosed: yes

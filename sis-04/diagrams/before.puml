@@ -1,0 +1,27 @@
+
+@startuml
+title SIS #04 - Architecture Before Refactoring
+
+skinparam componentStyle rectangle
+
+package "src (Starter)" {
+  component "App.tsx" as App {
+  }
+  component "main.tsx" as Main
+  component "index.css" as CSS
+}
+
+note right of App
+  React UI
+  Room catalog (2 rooms)
+  Time conversion
+  Booking validation
+  Blocked status check
+  Booking overlap check
+  Availability result
+end note
+
+Main --> App : renders
+Main --> CSS : imports
+
+@enduml

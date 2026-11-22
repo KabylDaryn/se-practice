@@ -1,0 +1,45 @@
+
+schema: 1
+assignment: "sis-04"
+
+student:
+  name: "Kabyl Daryn"
+  student_id: "24B032130"
+  group: "CSCI-2208"
+  github: "KabylDaryn"
+
+assistant:
+  tool: "ChatGPT (web)"
+  model: "GPT-6"
+
+project:
+  start_from: "starter"
+  baseline_commit: "30b1a27"
+  language: "ts"
+  vitest: "3.2.7"
+
+counts:
+  rooms: 4
+  tests_original: 0
+  tests_final: 17
+  risks: 4
+  exchanges: 3
+
+checker:
+  pass: 33
+  fail: 0
+  error: 0
+  commit: "6adcf12"
+  known_fails: []
+
+review_findings:
+  - "AC3: the original UI used a separate blocked checkbox; the refactoring uses the selected room's blocked property."
+  - "F2: equipment filtering must require ALL selected items; filterRooms uses every() instead of some()."
+  - "F5: availability must use the selected room's own bookings; checkRoom passes those bookings to canBook."
+  - "B1 and B2: exactly 120 minutes is accepted, but 121 minutes is rejected by the booking validation."
+
+honesty:
+  baseline_unchanged: yes
+  runs_unedited: yes
+  no_invented_metrics: yes
+  ai_usage_disclosed: yes

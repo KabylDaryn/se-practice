@@ -1,0 +1,36 @@
+
+@startuml
+title SIS #04 - Architecture After Refactoring
+
+skinparam componentStyle rectangle
+
+package "src (Refactored)" {
+  component "main.tsx" as Main
+  component "App.tsx\nUI and user interactions" as App
+  component "rooms.ts\nRoom type and catalog" as Rooms
+  component "filter.ts\nfilterRooms()" as Filter
+  component "booking.ts\ncanBook(), checkRoom()" as Booking
+  component "index.css\nStyles" as CSS
+}
+
+Main --> App : renders
+Main --> CSS : imports
+
+App --> Rooms : imports ROOMS
+App --> Filter : calls filterRooms()
+App --> Booking : calls checkRoom()
+
+Filter --> Rooms : imports Room type
+Booking --> Rooms : imports Room type
+
+note bottom of Booking
+  AC1-AC5
+  F3 and F5
+end note
+
+note bottom of Filter
+  F1 and F2
+end note
+
+@enduml
+    

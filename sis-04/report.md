@@ -19,7 +19,7 @@
 | Starting point | starter |
 | Baseline commit | 30b1a27 |
 | Language (ts or js) | TypeScript |
-| Vite version | 5.4.21 |
+| Vitest version | 3.2.7 |
 | Where I ran the tests | Local Windows, VS Code PowerShell |
 
 ### 1.1 Baseline run
@@ -150,7 +150,17 @@ Constraints:
 <!-- Short: the catalog (how many rooms, which equipment), how the filter is chosen on the page,
      what the empty state says, what happens to an old result when the room changes. -->
 
-(write here)
+I added a room catalog with four fictional rooms: A-101, B-204, C-305, and D-410. Each room has an ID, name, capacity, equipment, blocked status, and its own bookings.
+
+The available equipment includes Projector, Whiteboard, Computers, and Microphone.
+
+I added two filters to the page. Users can enter the number of attendees and select the equipment they need. The application only shows rooms with enough capacity and ALL selected equipment.
+
+If no rooms match the filters, the application displays "No rooms match your filters."
+
+I also separated the code into three modules: `rooms.ts` stores room data, `filter.ts` handles filtering, and `booking.ts` checks availability.
+
+When the user selects another room, the previous availability result is cleared. The next check uses the newly selected room's blocked status and bookings. This prevents showing outdated results from another room.
 
 ### 4.2 Demonstration
 
@@ -173,10 +183,11 @@ Constraints:
 
 | Module or component | Responsibility |
 | --- | --- |
-| `src/rooms.ts` | (write here) |
-| `src/booking.ts` | (write here) |
-| `src/filter.ts` | (write here) |
-| (write here) | (write here) |
+| `src/rooms.ts` | Defines the Room and Interval types and stores the catalog of four fictional rooms. |
+| `src/booking.ts` | Implements canBook for booking validation and checkRoom for checking the selected room. |
+| `src/filter.ts` | Implements filterRooms to select rooms by capacity and all requested equipment. |
+| `src/App.tsx` | Displays the interface, handles user input, calls the imported functions and shows availability results. |
+| `src/main.tsx` | Initializes React and renders the application. |
 
 ### 5.2 Design decisions
 
@@ -185,8 +196,8 @@ Constraints:
 
 | Decision | Alternative I did not take | Why |
 | --- | --- | --- |
-| (write here) | (write here) | (write here) |
-| (write here) | (write here) | (write here) |
+| Separate booking validation from the React UI | Keep the check() function and all booking rules inside App.tsx. | Risk R1 showed that UI and booking logic were mixed. Moving the rules into booking.ts allows AC1–AC5 to be tested without React and keeps the UI simpler. |
+| Store room information in a separate catalog | Keep the ROOMS array directly inside App.tsx. | Risk R2 showed that room data was mixed with presentation. A separate rooms.ts makes the catalog easier to update and supports F1–F5 without duplicating room definitions. |
 
 ### 5.3 Duplication removed
 
@@ -194,7 +205,8 @@ Constraints:
 
 | Before (file / function, what was repeated) | After (where it lives now) |
 | --- | --- |
-| (write here) | (write here) |
+| src/App.tsx, check(): booking validation was embedded in the UI and would need to be repeated for separate room checks. | src/booking.ts, canBook() and checkRoom(): one shared implementation of booking rules is used for every room. |
+| src/App.tsx, ROOMS: room data was maintained alongside presentation code. | src/rooms.ts, ROOMS: one central catalog imported by the UI. |
 
 ## 6. Automated tests (Task 4)
 
@@ -205,30 +217,34 @@ Constraints:
 
 | ID | Test title (as in the file) | Input → expected |
 | --- | --- | --- |
-| AC1 | (write here) | (write here) |
-| AC2 | (write here) | (write here) |
-| AC3 | (write here) | (write here) |
-| AC4 | (write here) | (write here) |
-| AC5 | (write here) | (write here) |
-| F1 | (write here) | (write here) |
-| F2 | (write here) | (write here) |
-| F3 | (write here) | (write here) |
-| F4 | (write here) | (write here) |
-| F5 | (write here) | (write here) |
-| B1 | (write here) | (write here) |
-| B2 | (write here) | (write here) |
-| B3 | (write here) | (write here) |
-| B4 | (write here) | (write here) |
-| B5 | (write here) | (write here) |
-| B6 | (write here) | (write here) |
-| INT | (write here) | (write here) |
+| AC1 | AC1 rejects invalid time boundaries | `start=-1`, `end=1500`, or `start=500` with `now=540` → false |
+| AC2 | AC2 rejects bookings longer than 120 minutes | `start=660`, `end=781` → false |
+| AC3 | AC3 rejects blocked rooms | `blocked=true` → false |
+| AC4 | AC4 rejects overlapping bookings | `start=650`, existing booking 600–660 → false |
+| AC5 | AC5 does not mutate existing bookings | Call `canBook()` → bookings remain unchanged |
+| F1 | F1 filters by room capacity | `attendees=30` → only room B |
+| F2 | F2 requires ALL selected equipment | Projector + Computers → only room B |
+| F3 | F3 rejects a blocked room | `checkRoom()` for blocked room C → false |
+| F4 | F4 returns an empty list when no rooms match | `attendees=100` → empty array |
+| F5 | F5 uses the selected rooms own bookings | Room A → false; Room B → true |
+| B1 | B1 accepts exactly 120 minutes | `660–780` → true |
+| B2 | B2 rejects 121 minutes | `660–781` → false |
+| B3 | B3 accepts touching bookings | Existing 600–660, requested 660–720 → true |
+| B4 | B4 rejects overlapping bookings | Existing 600–660, requested 659–720 → false |
+| B5 | B5 includes room when capacity equals attendees | Room A capacity 20, attendees 20 → included |
+| B6 | B6 excludes room when capacity is one below attendees | Room A capacity 20, attendees 21 → excluded |
+| INT | INT filters rooms and checks the returned room | Filter for 30 attendees and Computers → room B; availability → true |
 
 ### 6.2 Commands
 
 <!-- The commands exactly as you typed them, from app/. -->
 
 ```text
-(paste here)
+
+npx tsc --noEmit
+npm run build
+npx vitest run
+
 ```
 
 ### 6.3 Final run
@@ -237,7 +253,33 @@ Constraints:
      tests equals what your test files hold (R2). -->
 
 ```text
-(paste here)
+
+RUN  v3.2.7 C:/Users/Kabyl Daryn/se-practice/sis-04/app
+
+✓ src/booking.test.ts (17 tests) 15ms
+  ✓ Original acceptance criteria > AC1 rejects invalid time boundaries
+  ✓ Original acceptance criteria > AC2 rejects bookings longer than 120 minutes
+  ✓ Original acceptance criteria > AC3 rejects blocked rooms
+  ✓ Original acceptance criteria > AC4 rejects overlapping bookings
+  ✓ Original acceptance criteria > AC5 does not mutate existing bookings
+  ✓ Feature requirements > F1 filters by room capacity
+  ✓ Feature requirements > F2 requires ALL selected equipment
+  ✓ Feature requirements > F3 rejects a blocked room
+  ✓ Feature requirements > F4 returns an empty list when no rooms match
+  ✓ Feature requirements > F5 uses the selected rooms own bookings
+  ✓ Boundary tests > B1 accepts exactly 120 minutes
+  ✓ Boundary tests > B2 rejects 121 minutes
+  ✓ Boundary tests > B3 accepts touching bookings
+  ✓ Boundary tests > B4 rejects overlapping bookings
+  ✓ Boundary tests > B5 includes room when capacity equals attendees
+  ✓ Boundary tests > B6 excludes room when capacity is one below attendees
+  ✓ Integration > INT filters rooms and checks the returned room
+
+Test Files  1 passed (1)
+     Tests  17 passed (17)
+  Start at  20:02:57
+  Duration  1.00s (transform 89ms, setup 0ms, collect 108ms, tests 15ms, environment 0ms, prepare 318ms)
+
 ```
 
 ## 7. Quality evaluation (Task 5)
@@ -248,10 +290,10 @@ Constraints:
 
 | Measure | Original | Final | How I obtained it |
 | --- | --- | --- | --- |
-| Automated tests passed / total | (write here) | (write here) | (write here) |
-| Duplicated logic locations removed | (write here) | (write here) | (write here) |
-| Code structure: modules and their responsibilities | (write here) | (write here) | (write here) |
-| Remaining limitation | (write here) | (write here) | (write here) |
+| Automated tests passed / total | 0/0 | 17/17 | Compared the original Vitest run in section 1.1 with the final run in section 6.3. |
+| Duplicated logic locations removed | 0 | 0 | Inspected the baseline `App.tsx` and the final modules. No identical duplicated booking implementation existed originally. One booking-rule implementation was extracted into `booking.ts` to prevent future duplication. |
+| Code structure: modules and their responsibilities | 1 combined module (`App.tsx`) | 4 separated modules (`App.tsx`, `rooms.ts`, `filter.ts`, `booking.ts`) | Compared the original source files with the final files and responsibilities listed in section 5.1. |
+| Remaining limitation | No persistent storage | No persistent storage | Inspected the room catalog and application code. Room data remains fictional and stored in memory, and bookings are not saved to a database. |
 
 ## 8. AI evidence appendix
 
@@ -262,69 +304,98 @@ Constraints:
 
 ### 8.1 Exchange 1
 
-**Tool and model:** (write here)
-**Date:** (write here)
-**Purpose:** (write here)
+**Tool and model:** ChatGPT, GPT-6
+**Date:** 22.11.2026
+**Purpose:** Analyze the original project and identify maintainability problems.
 
 **Prompt:**
 
 ```text
-(paste here)
+Help me complete SIS #04. Analyze the Smart Campus Room Availability Checker starter project, identify maintainability risks, and prepare a refactoring plan before changing the code.
 ```
 
 **Output used:**
 
 ```text
-(paste here)
+The original App.tsx contains room data, booking validation,
+and UI logic in one component. The blocked checkbox is separate
+from the selected room's blocked property. Switching between
+rooms can leave an old availability result on the screen.
+
+The project should separate room data, filtering, and booking
+validation into independent modules. This will make the code
+easier to understand, maintain, and test.
 ```
 
-**Problems found:** (write here)
-**Changes made:** (write here)
-**Verified by:** (write here)
+**Problems found:**  The original application mixed UI and business logic. Room data and blocked status were not properly separated.
+**Changes made:** Documented four maintainability risks and created a nine-step improvement plan before editing the application.
+**Verified by:**  Inspected the original App.tsx and created analysis commit 25cf609 after baseline commit 30b1a27.
 
 ### 8.2 Exchange 2
 
-**Tool and model:** (write here)
-**Date:** (write here)
-**Purpose:** (write here)
+**Tool and model:** ChatGPT, GPT-6
+**Date:** 22.11.2026
+**Purpose:** Implement the room catalog, filtering, and booking refactoring.
 
 **Prompt:**
 
 ```text
-(paste here)
+Continue the implementation of SIS #04 after the analysis and improvement plan. Create a room catalog with at least four rooms, add capacity and equipment filters, and move the booking validation into separate TypeScript modules. Keep the original AC1–AC5 rules working and update the React interface to use the new modules.
 ```
 
 **Output used:**
 
 ```text
-(paste here)
+Create rooms.ts with four fictional rooms. Each room needs
+an ID, name, capacity, equipment, blocked status, and bookings.
+
+Create filter.ts with filterRooms to check capacity and require
+all selected equipment.
+
+Move booking validation into booking.ts. Keep canBook for the
+original acceptance criteria and add checkRoom to use the
+selected room's blocked status and bookings.
+
+Update App.tsx to use the imported modules and clear previous
+results when the selected room changes.
 ```
 
-**Problems found:** (write here)
-**Changes made:** (write here)
-**Verified by:** (write here)
+**Problems found:** The original application had no equipment or capacity filters, and booking rules were inside the UI.
+**Changes made:** Created rooms.ts, filter.ts, and booking.ts. Updated App.tsx to use these modules and added room filtering.
+**Verified by:** Ran npm run build successfully. The checker passed A1–A6, confirming the required modules and rules.
 
 ### 8.3 Exchange 3
 
-**Tool and model:** (write here)
-**Date:** (write here)
-**Purpose:** (write here)
+**Tool and model:** ChatGPT, GPT-6
+**Date:** 22.11.2026
+**Purpose:** Create automated tests for original requirements and new features.
 
 **Prompt:**
 
 ```text
-(paste here)
+The application builds successfully, but Vitest reports "No test files found". Help me add automated tests for the existing booking rules AC1–AC5, new feature requirements F1–F5, boundary cases B1–B6, and integration behavior. Use the real functions without mocks and make sure all tests pass.
+
 ```
 
 **Output used:**
 
 ```text
-(paste here)
+Create booking.test.ts with Vitest tests for AC1–AC5,
+F1–F5, B1–B6, and INT.
+
+Test invalid time boundaries, maximum booking duration,
+blocked rooms, overlapping bookings, and immutability.
+
+Also test capacity filtering, equipment requirements,
+empty results, selected-room bookings, boundary values,
+and integration between filtering and availability checking.
+
+Use real modules without mocks.
 ```
 
-**Problems found:** (write here)
-**Changes made:** (write here)
-**Verified by:** (write here)
+**Problems found:** The original project had no automated tests, so changes could break existing booking rules without being detected.
+**Changes made:** Created src/booking.test.ts with 17 automated tests covering all required categories.
+**Verified by:** Ran npx vitest run. All 17 tests passed. The SIS checker also passed S1–S7.
 
 ## 9. Checker results and known fails
 
@@ -342,4 +413,8 @@ Constraints:
      incorrect? What did you personally verify? How did tests influence your engineering
      decisions? What would you improve next? -->
 
-(write here)
+For SIS #04, I gave the AI assistant the Smart Campus starting code, requirements AC1–AC6 and F1–F5, project constraints (fictional data only, no login, payments, live APIs, or database), and the required `app/src` structure (`rooms.ts`, `filter.ts`, `booking.ts`, and UI components).
+Suggestions for separating catalog data, filtering, booking checks, and UI rendering into clean modules were useful for keeping business rules out of the interface. However, some suggestions were flawed—such as matching any selected equipment instead of requiring all selected items, overlooking edge cases, or risking changes to existing booking behavior.
+I personally verified every change against AC1–AC6 and F1–F5, confirmed that `canBook` and booking immutability stayed intact, checked the `filterRooms` and `checkRoom` behavior on real test data, and ran the full test suite after each change rather than trusting generated code on sight.
+Tests strongly guided my engineering decisions. Testing boundaries like 120- versus 121-minute durations, touching versus overlapping intervals, capacity thresholds, and `filterRooms` combined with `checkRoom` caught potential logic slips early and encouraged keeping filtering and availability checks pure, predictable, and easy to inspect.
+Next time, I would improve by specifying strict boundary rules and negative cases upfront in my prompt, requesting small focused edits one at a time, and verifying each change with tests before moving on.

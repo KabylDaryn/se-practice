@@ -45,6 +45,7 @@ export default function App() {
 
       if (!(s < e)) {
         setError('The end time must be after the start time.');
+        return;
       } else {
         setError('');
       }

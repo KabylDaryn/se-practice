@@ -225,3 +225,12 @@ describe("Week 08 regression tests", () => {
     expect(bookings).toStrictEqual(before);
   });
 });
+it('R2: rejects a fractional start time', () => {
+  expect(canBook({
+    start: 600.5,
+    end: 660,
+    now: 540,
+    blocked: false,
+    bookings: [],
+  })).toBe(false);
+});

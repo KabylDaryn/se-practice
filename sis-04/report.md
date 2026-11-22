@@ -14,13 +14,13 @@
 
 | Item | Value |
 | --- | --- |
-| Assistant (tool) | (write here) |
-| Assistant model | (write here) |
-| Starting point | (write here) |
-| Baseline commit | (write here) |
-| Language (ts or js) | (write here) |
-| Vitest version | (write here) |
-| Where I ran the tests | (write here) |
+| Assistant (tool) | ChatGPT |
+| Assistant model | GPT-6 |
+| Starting point | starter |
+| Baseline commit | 30b1a27 |
+| Language (ts or js) | TypeScript |
+| Vite version | 5.4.21 |
+| Where I ran the tests | Local Windows, VS Code PowerShell |
 
 ### 1.1 Baseline run
 
@@ -29,7 +29,14 @@
      "No test files found". That is your honest "original" number, 0/0. -->
 
 ```text
-(paste here)
+PS C:\Users\Kabyl Daryn\se-practice\sis-04\app> npx vitest run
+
+RUN  v3.2.7 C:/Users/Kabyl Daryn/se-practice/sis-04/app
+
+No test files found, exiting with code 1
+
+include: **/*.{test,spec}.?(c|m)[jt]s?(x)*
+exclude: **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*
 ```
 
 ## 2. Context for the assistant
@@ -40,7 +47,19 @@
      they do. A tree is fine:  src/App.tsx — the page, holds the rooms and the form … -->
 
 ```text
-(paste here)
+sis-04/
+  app/
+    src/
+      App.tsx       - React UI, room data, booking validation
+      main.tsx      - React entry point
+      index.css     - Application styles
+    package.json    - Dependencies and npm scripts
+  diagrams/         - Before and after architecture diagrams
+  evidence/         - Screenshots of application behavior
+  tests/            - SIS checker and validation scripts
+  report.md         - Project analysis and evidence
+  AI_USAGE.md       - AI usage disclosure
+  submission.yml    - Submission declaration
 ```
 
 ### 2.2 The context message as sent
@@ -49,7 +68,41 @@
      (no login, payments, live APIs or database; fictional data only). Unedited. -->
 
 ```text
-(paste here)
+I am working on SIS #04 using the unchanged TypeScript
+Starter application. Baseline commit: 30b1a27.
+
+Repository map:
+- src/App.tsx: room data, booking rules and UI.
+- src/main.tsx: React entry point.
+- src/index.css: application styling.
+- package.json: dependencies and scripts.
+
+Preserve AC1-AC6:
+AC1: Validate booking times and boundaries.
+AC2: Maximum booking duration is 120 minutes.
+AC3: Blocked rooms must be unavailable.
+AC4: Overlapping bookings are rejected; touching is allowed.
+AC5: Existing booking data must not be mutated.
+AC6: Provide clear and responsive UI feedback.
+
+Implement F1-F5:
+F1: Capacity must be >= attendees.
+F2: Rooms must have ALL selected equipment.
+F3: Blocked rooms are never available.
+F4: Display a clear empty state when no rooms match.
+F5: Changing the selected room refreshes availability
+and uses that room's own bookings.
+
+Constraints:
+- Fictional room data only.
+- No login or authentication.
+- No payments.
+- No live APIs.
+- No database.
+- Keep the original booking rules.
+- Separate rooms, booking, filter and UI.
+- Use TypeScript, React and Vitest.
+- Add tests with the required IDs.
 ```
 
 ## 3. Codebase analysis (Task 1)
@@ -62,24 +115,33 @@
 
 | # | Risk | Where (file / function) | Evidence | Priority |
 | --- | --- | --- | --- | --- |
-| 1 | (write here) | (write here) | (write here) | High / Medium / Low |
-| 2 | (write here) | (write here) | (write here) | High / Medium / Low |
-| 3 | (write here) | (write here) | (write here) | High / Medium / Low |
+| 1 | Business logic mixed with UI | src/App.tsx, check() | Time validation, duration limit, blocked status and booking overlap checks are implemented inside the React component. | High  |
+| 2 | Room data mixed with presentation | src/App.tsx, ROOMS | The room catalog is declared inside the UI file and contains only two rooms without capacity or equipment. | High  |
+| 3 | Blocked status inconsistency | src/App.tsx, check() | The Room type contains blocked, but check() uses a separate checkbox state instead of room.blocked. | High |
+| 4 | Old result remains after switching rooms | src/App.tsx, setRoomId | Changing the selected room does not reset the previous availability result. | Medium |
 
 ### 3.2 Improvement plan — before editing
 
 <!-- Numbered, in the order you will do it, smallest safe step first. Written BEFORE you change
      code: the commit that adds this section comes before the commit that changes app/src. -->
 
-1. (write here)
-2. (write here)
-3. (write here)
+1. Create rooms.ts with the Room type and at least four fictional rooms.
+2. Move booking validation into booking.ts using canBook, and implement checkRoom.
+3. Create filter.ts with filterRooms for capacity and equipment filtering.
+4. Update App.tsx to import these modules instead of containing business rules.
+5. Add attendee and equipment filters, room selection, and an empty-state message.
+6. Reset or refresh the availability result when the selected room changes.
+7. Add Vitest tests for AC1-AC5, F1-F5, B1-B6 and INT.
+8. Create before and after PlantUML diagrams.
+9. Capture five screenshots and collect actual quality measurements.
+
+
 
 ### 3.3 One AI suggestion I rejected or modified
 
 | Suggestion (as the assistant made it) | Decision | Why — with the AC, F-rule, test or file behind it |
 | --- | --- | --- |
-| (write here) | Rejected / Modified | (write here) |
+| Keep the separate "Room blocked" checkbox as the source of availability status. | Rejected | F3 requires availability to depend on the selected room's actual blocked property. The separate checkbox in App.tsx can disagree with the catalog. checkRoom should use the selected room's blocked status and bookings. |
 
 ## 4. Feature extension (Task 2)
 

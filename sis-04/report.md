@@ -159,11 +159,11 @@ Constraints:
 
 | Screenshot | What it shows |
 | --- | --- |
-| `evidence/filter-match.png` | (write here) |
-| `evidence/filter-empty.png` | (write here) |
-| `evidence/switch-a.png` | (write here) |
-| `evidence/switch-b.png` | (write here) |
-| `evidence/narrow.png` | (write here) |
+| `evidence/filter-match.png` | Attendees = 30, Projector and Computers selected. Only Room B-204 matches the filters. Availability is shown as Available for 11:00–12:00. |
+| `evidence/filter-empty.png` | Attendees = 100, no equipment selected. The application displays "No rooms match your filters." |
+| `evidence/switch-a.png` | Room A-101 selected, current time 09:00, booking 10:00–11:00. The result is Unavailable because the room already has a booking. |
+| `evidence/switch-b.png` | Room B-204 selected with the same times, 10:00–11:00. The result is Available because the room has no conflicting bookings. |
+| `evidence/narrow.png` | Application displayed in a narrow portrait viewport, showing the room filters and booking form on a mobile-sized screen. |
 
 ## 5. Refactoring (Task 3)
 
